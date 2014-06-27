@@ -1,0 +1,12 @@
+{
+  "name": "ember-d3-component",
+  "version": "0.0.1",
+  "licence": "MIT Licence",
+  "description": "emberjs d3js component",
+  "author": "Antoine Moser",
+  "main": "dist/ember-d3.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/MythX/ember-d3-component.git"
+  }
+}

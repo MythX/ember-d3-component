@@ -1,0 +1,36 @@
+/* Charts */
+.line {
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+.noMargin {
+  margin: 0px;
+}
+
+.needle, .needle-center {
+  fill: #7C7A77;
+}
+
+.axis {
+  font: 12px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 60px;
+  height: 35px;
+  padding: 2px;
+  font: 12px sans-serif;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+}

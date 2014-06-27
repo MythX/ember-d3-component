@@ -1,0 +1,41 @@
+<html>
+<head>
+  <title></title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="../src/style.css" media="all">
+</head>
+<body>
+  <script src="./../bower_components/jquery/dist/jquery.js"></script>
+  <script src="./../bower_components/handlebars/handlebars.js"></script>
+  <script src="./../bower_components/ember/ember.js"></script>
+  <script src="./../bower_components/d3/d3.js"></script>
+  <script src="./../bower_components/moment/moment.js"></script>
+  <script src="./../src/main.js"></script>
+
+  <script>
+    App = Ember.Application.create();
+    App.ApplicationRoute = Ember.Route.extend({
+      model: function() {
+        var newContent = [];
+        var max = 100;
+        
+        for(var i = 0, l = 8; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            valD: max/2+Math.sin(i)*Math.ceil((max/2.5)*Math.random())
+          });
+        
+          newContent[i] = item;
+        }
+        return newContent;
+      }
+    });
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="application">    
+    {{line-chart width=1000 height=300 dataBinding='content' xAxis=true yAxis=true formatXAxis='date' tooltip=true}}     
+  </script>
+</body>
+</html>

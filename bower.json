@@ -1,0 +1,23 @@
+{
+  "name": "ember-d3-component",
+  "version": "0.0.1.",
+  "licence": "MIT Licence",
+  "authors": [
+    {
+      "name": "Antoine Moser",
+      "email": "moser.antoine@gmail.com"
+    }
+  ],
+  "main": "dist/ember-d3.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test"
+  ],
+  "dependencies": {
+    "ember": "~1.5.1",
+    "d3": "~3.4.8",
+    "moment": "~2.7.0"
+  }
+}
