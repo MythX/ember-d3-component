@@ -1,6 +1,20 @@
-(function(root, undefined) {
+// ==========================================================================
+// Project:   Ember D3 Component
+// Copyright: © 2014 Antoine Moser
+// License:   MIT (see LICENSE)
+// ==========================================================================
+(function() {
 
-  Ember.LineChartComponent = Ember.Component.extend({
+Ember.Chart = Ember.Namespace.create();
+Ember.Chart.VERSION = '0.0.1';
+
+Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
+
+})();
+
+(function() {
+
+Ember.Chart.LineChartComponent = Ember.Component.extend({
     tagName: 'svg',
     margin: {
       top: 35,
@@ -181,6 +195,6 @@
       return moment(date).format('DD/MM');
     }
   });
-
-  Ember.Handlebars.helper('line-chart', Ember.LineChartComponent);
-}(this));
+  Ember.Handlebars.helper('line-chart', Ember.Chart.LineChartComponent);
+  
+}());
