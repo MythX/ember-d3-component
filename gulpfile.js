@@ -1,12 +1,13 @@
-var gulp = require('gulp'),
-    jshint = require('gulp-jshint'),
-    concat = require('gulp-concat'),
-    less = require('gulp-less'),
-    watch = require('gulp-watch'),
-    handlebars = require('gulp-ember-handlebars'),
-    header = require('gulp-header'),
+var gulp        = require('gulp'),
+    jshint      = require('gulp-jshint'),
+    concat      = require('gulp-concat'),
+    less        = require('gulp-less'),
+    watch       = require('gulp-watch'),
+    livereload  = require('gulp-livereload'),
+    handlebars  = require('gulp-ember-handlebars'),
+    header      = require('gulp-header'),
     runSequence = require('run-sequence'),
-    pkg = require('./package.json');
+    pkg         = require('./package.json');
 
 var banner = [
 '// ==========================================================================',
@@ -23,16 +24,15 @@ var paths = {
     'lib/templates-top.js',
     'lib/components/*.js'
   ],
-  styles: 'lib/styles/ember-d3.less'
+  styles: 'lib/styles/ember-d3.less',
+  css: 'dist/*.css'
 };
 
 gulp.task('templates', function() {
   gulp.src([paths.templates])
     .pipe(handlebars({
       outputType: 'browser',
-      processName: function(path) {
-        return ('components/'+path).replace('.hbs', '');
-      }
+      namespace: 'Ember.TEMPLATES'
     }))
     .pipe(concat('templates.js'))
     .pipe(gulp.dest('tmp'));
@@ -58,6 +58,18 @@ gulp.task('styles', function() {
   return gulp.src(paths.styles)
     .pipe(less())
     .pipe(gulp.dest(paths.dist));
+});
+
+gulp.task('watch', function() {
+  var server = livereload();
+  var changed = function(file) {
+    server.changed(file.path);
+  };
+
+  gulp.watch(paths.scripts, ['scripts', 'release']).on('change', changed);
+  gulp.watch(paths.templates, ['templates']).on('change', changed);
+  gulp.watch(paths.styles, ['styles']);
+  gulp.watch(paths.css).on('change', changed);
 });
 
 gulp.task('default', function(callback) {
