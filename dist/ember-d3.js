@@ -84,8 +84,7 @@ Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
     },
 
     createY: function(data) {
-      var percentage = (5/100) * this.height;
-      return d3.scale.linear().range([this.height, 0]).domain([0, d3.max(data, function(d) { return d.valD; }) + percentage]);
+      return d3.scale.linear().range([this.height, 0]).domain([0, d3.max(data, function(d) { return d.valD; })]);
     },
 
     drawXAxis: function(x, data, formatXAxis, legendX, height) {
@@ -222,7 +221,7 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
     },
 
     createY: function(data) {
-      var percentage = (10/100) * this.height;
+      var percentage = (5/100) * this.height;
       return d3.scale.linear().range([this.height, 0]).domain([0, d3.max(data, function(d) { return d.valD; }) + percentage]);
     },
 
