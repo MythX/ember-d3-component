@@ -156,11 +156,12 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       var color = this.get('color');
       var viewXAxis = this.get('xAxis');
       var viewYAxis = this.get('yAxis');
+      var XAxisOrigin = this.get('XAxisOriginAtZero');
       var toolTip = this.get('tooltip');
 
       var formatedData = this.formatData(data, formatX, 'DD/MM');
 
-      var x = this.createX(formatedData, formatX);
+      var x = this.createX(formatedData, formatX, XAxisOrigin);
       var y = this.createY(formatedData);
 
       if(color === undefined) {
@@ -205,10 +206,13 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       }
     },
 
-    createX: function(data, type) {
+    createX: function(data, type, origin) {
       var x = null;
       if(type === 'date') {
-        x = d3.scale.ordinal().rangePoints([0, this.width]).domain(data.map(function(d) { return d.keyD; }));
+        if(origin)
+          x = d3.scale.ordinal().rangePoints([0, this.width]).domain(data.map(function(d) { return d.keyD; }));
+        else
+          x = d3.scale.ordinal().rangeRoundBands([0, this.width], 0.1).domain(data.map(function(d) { return d.keyD; }));
       } else {
         x = d3.scale.linear().range([0, this.width]).domain([0, data.length - 1]);
       }
@@ -221,9 +225,12 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       return d3.scale.linear().range([this.height, 0]).domain([0, d3.max(data, function(d) { return d.valD; }) + percentage]);
     },
 
-    drawLine: function(x, y) {
+    drawLine: function(x, y, origin) {
       var line = d3.svg.line().y(function(d) { return y(d.valD); });
-      line.x(function(d) { return x(d.keyD); });
+      if(!origin)
+        line.x(function(d) { return x(d.keyD) + (x.rangeBand() / 2); });
+      else
+        line.x(function(d) { return x(d.keyD); });
       return line;
     },
 
@@ -254,13 +261,13 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       return yAxis;
     },
 
-    drawPoints: function(data, x, y) {
+    drawPoints: function(data, x, y, origin) {
       var points = this.chart.selectAll('.points')
         .data(data)
         .enter().append('svg:circle')
         .attr('stroke', 'black')
         .attr('fill', 'black')
-        .attr('cx', function(d) { return x(d.keyD); })
+        .attr('cx', function(d) { return x(d.keyD) + (!origin ? (x.rangeBand() / 2) : 0); })
         .attr('cy', function(d) { return y(d.valD); })
         .attr('r', 3);
 
