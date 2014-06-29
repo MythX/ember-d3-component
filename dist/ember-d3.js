@@ -1,5 +1,6 @@
 // ==========================================================================
 // Project:   Ember D3 Component
+// Version    v0.0.2
 // Copyright: © 2014 Antoine Moser
 // License:   MIT (see LICENSE)
 // ==========================================================================
@@ -202,7 +203,7 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
           height = this.get('height') - this.margin.top - this.margin.bottom,
           data = this.get('data');
 
-this.width = width;
+      this.width = width;
       this.height = height;
 
       var formatX = this.get('formatXAxis');

@@ -12,6 +12,7 @@ var gulp        = require('gulp'),
 var banner = [
 '// ==========================================================================',
 '// Project:   Ember D3 Component',
+'// Version    v<%= pkg.version %>',
 '// Copyright: © 2014 Antoine Moser',
 '// License:   MIT (see LICENSE)',
 '// ==========================================================================\n',
