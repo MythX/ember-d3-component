@@ -144,60 +144,6 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       this.draw();
     },
 
-    draw_old: function() {
-      var width = this.get('width') - this.margin.left - this.margin.right,
-        height = this.get('height') - this.margin.top - this.margin.bottom,
-        data = this.get('data');
-
-    var formatX = this.get('formatX');
-    var color = this.get('color');
-    var tooltip = this.get('tooltip');
-    var x = null;
-
-    var y = d3.scale.linear().range([height, 0]).domain([0, d3.max(data, function(d) { return d.valD; })+10]);
-    var viewXAxis = this.get('xAxis');
-    var viewYAxis = this.get('yAxis');
-    var line = d3.svg.line().y(function(d) { return y(d.valD); });
-
-    if(color === undefined) {
-      color = "#428bca";
-    }
-
-    var formatData = [];
-
-      formatData = data;
-      x = d3.scale.linear().range([0, width]).domain([0, formatData.length-1]);
-      line.x(function(d) { return x(d.keyD); });
-
-    var chart = d3.select('#'+this.get('elementId'))
-      .attr('id', 'chart')
-      .attr('width', width + this.margin.left + this.margin.right)
-      .attr('height', height + this.margin.top + this.margin.bottom)
-      .append('svg:g')
-      .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
-
-    chart.append('svg:clipPath')
-      .attr('id', 'clip')
-      .append('svg:rect')
-      .attr('width', width + this.margin.left + this.margin.right)
-      .attr('height', height + this.margin.top + this.margin.bottom);
-
-    chart.append('svg:path')
-      .attr('class', 'line')
-      .attr('clip-path', 'url(#clip)')
-      .attr('stroke', color)
-      .attr('d', line(formatData));
-
-    if(viewXAxis) {
-      var xAxis = d3.svg.axis().scale(x).orient("bottom");
-
-      chart.append('svg:g')
-        .attr('class', 'x axis')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call(xAxis);
-    }
-    },
-
     draw: function() {
       var width = this.get('width') - this.margin.left - this.margin.right,
           height = this.get('height') - this.margin.top - this.margin.bottom,
@@ -271,7 +217,8 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
     },
 
     createY: function(data) {
-      return d3.scale.linear().range([this.height, 0]).domain([0, d3.max(data, function(d) { return d.valD; })+10]);
+      var percentage = (10/100) * this.height;
+      return d3.scale.linear().range([this.height, 0]).domain([0, d3.max(data, function(d) { return d.valD; }) + percentage]);
     },
 
     drawLine: function(x, y) {

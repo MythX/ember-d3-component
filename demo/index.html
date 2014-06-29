@@ -23,7 +23,7 @@
         
         for(var i = 0, l = 8; i < l; i++) {
           var item = Ember.Object.create({
-            keyD: i,
+            keyD: moment().add('days', i),
             valD: max/2+Math.sin(i)*Math.ceil((max/2.5)*Math.random())
           });
         
@@ -35,8 +35,8 @@
   </script>
 
   <script type="text/x-handlebars" data-template-name="application">
-    {{bar-chart width=1000 height=300 dataBinding='content' xAxis=true yAxis=true }}
-    {{line-chart width=1000 height=300 dataBinding='content' xAxis=true yAxis=true  tooltip=true}}
+    {{bar-chart width=1000 height=300 dataBinding='content' xAxis=true yAxis=true formatXAxis='date'}}
+    {{line-chart width=1000 height=300 dataBinding='content' xAxis=true yAxis=true formatXAxis='date' tooltip=true}}
   </script>
 
   <script src="http://localhost:35729/livereload.js"></script>
