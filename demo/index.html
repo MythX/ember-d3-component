@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="../src/style.css" media="all">
+  <link rel="stylesheet" href="../dist/ember-d3.css" media="all">
 </head>
 <body>
   <script src="./../bower_components/jquery/dist/jquery.js"></script>
@@ -12,7 +12,7 @@
   <script src="./../bower_components/ember/ember.js"></script>
   <script src="./../bower_components/d3/d3.js"></script>
   <script src="./../bower_components/moment/moment.js"></script>
-  <script src="./../ember-d3.js"></script>
+  <script src="./../dist/ember-d3.js"></script>
 
   <script>
     App = Ember.Application.create();
@@ -23,7 +23,7 @@
         
         for(var i = 0, l = 8; i < l; i++) {
           var item = Ember.Object.create({
-            keyD: moment().add('days', i),
+            keyD: i,
             valD: max/2+Math.sin(i)*Math.ceil((max/2.5)*Math.random())
           });
         
@@ -34,8 +34,11 @@
     });
   </script>
 
-  <script type="text/x-handlebars" data-template-name="application">    
-    {{line-chart width=1000 height=300 dataBinding='content' xAxis=true yAxis=true formatXAxis='date' tooltip=true}}     
+  <script type="text/x-handlebars" data-template-name="application">
+    {{bar-chart width=1000 height=300 dataBinding='content' xAxis=true yAxis=true }}
+    {{line-chart width=1000 height=300 dataBinding='content' xAxis=true yAxis=true  tooltip=true}}
   </script>
+
+  <script src="http://localhost:35729/livereload.js"></script>
 </body>
 </html>
