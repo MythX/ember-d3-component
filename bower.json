@@ -10,7 +10,6 @@
   ],
   "main": "dist/ember-d3.js",
   "ignore": [
-    "**/.*",
     "node_modules",
     "bower_components",
     "test"
