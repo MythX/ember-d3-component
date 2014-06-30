@@ -106,9 +106,7 @@ Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
 
     drawYAxis: function(y, legendY) {
       var yAxis = d3.svg.axis().scale(y).orient("left");
-
-      console.log(legendY);
-
+      
       this.chart.append('svg:g')
         .attr('class', 'y axis')
         .call(yAxis)
@@ -185,11 +183,20 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
         .attr('width', width + this.margin.left + this.margin.right)
         .attr('height', height + this.margin.top + this.margin.bottom);
 
-      this.chart.append('svg:path')
+      var path = this.chart.append('svg:path')
         .attr('class', 'line')
         .attr('clip-path', 'url(#clip)')
         .attr('stroke', color)
         .attr('d', line(formatedData));
+
+      /* Animation */
+      var totalLength = path.node().getTotalLength();
+      path.attr("stroke-dasharray", totalLength+","+totalLength)
+            .attr("stroke-dashoffset", totalLength)
+            .transition()
+            .duration(1000)
+            .ease("linear-in-out")
+            .attr("stroke-dashoffset", 0);
 
       var points = this.drawPoints(formatedData, x, y);
 
