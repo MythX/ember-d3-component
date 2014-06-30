@@ -36,6 +36,7 @@ Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
       var viewXAxis = this.get('xAxis');
       var viewYAxis = this.get('yAxis');
       var formatX = this.get('formatXAxis');
+      var legendY = this.get('legendY');
 
       this.height = height;
       this.width = width;
@@ -74,7 +75,6 @@ Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
       }
 
       if(viewYAxis) {
-        var legendY = this.get("legendY");
         this.drawYAxis(y, legendY);
       }
     },
@@ -107,14 +107,15 @@ Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
     drawYAxis: function(y, legendY) {
       var yAxis = d3.svg.axis().scale(y).orient("left");
 
+      console.log(legendY);
+
       this.chart.append('svg:g')
         .attr('class', 'y axis')
         .call(yAxis)
         .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
+        .attr('y', -20)
+        .attr('x', -20)
+        .attr('dy', '.71em')
         .text(legendY);
 
       return yAxis;
@@ -252,10 +253,9 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
         .attr('class', 'y axis')
         .call(yAxis)
         .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
+        .attr('y', -20)
+        .attr('x', -20)
         .attr("dy", ".71em")
-        .style("text-anchor", "end")
         .text(legendY);
 
       return yAxis;
