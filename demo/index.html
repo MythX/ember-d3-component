@@ -19,12 +19,12 @@
     App.ApplicationRoute = Ember.Route.extend({
       model: function() {
         var newContent = [];
-        var max = 100;
+        var max = 100, min = 0;
         
         for(var i = 0, l = 8; i < l; i++) {
           var item = Ember.Object.create({
             keyD: moment().add('days', i),
-            valD: max/2+Math.sin(i)*Math.ceil((max/2.5)*Math.random())
+            valD: Math.floor((Math.random() * max) + min)
           });
         
           newContent[i] = item;
@@ -32,13 +32,47 @@
         return newContent;
       }
     });
+
+    App.ApplicationController = Ember.ArrayController.extend({
+      init : function() {
+      },
+
+      generateValues: function() {
+        var newContent = [];
+        var max = 100, min = 0;
+
+        for(var i = 0, l = 8; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            //valD: max/2+Math.sin(i)*Math.ceil((max/2.5)*Math.random())
+            valD: Math.floor((Math.random() * max) + min)
+          });
+
+          newContent[i] = item;
+        }
+        return newContent;
+      },
+
+      actions: {
+        generateValue: function() {
+          var tab = window.tab = this.generateValues();
+          this.set("content", tab);
+
+          console.log(tab[2].valD);
+        }
+      }
+    });
   </script>
+
 
   <script type="text/x-handlebars" data-template-name="application">
+  <button type="button" class="btn btn-default btn-lg" {{action 'generateValue'}} >
+    Generate new Values
+  </button>
+
     {{bar-chart width=1000 height=300 dataBinding='content' xAxis=true yAxis=true formatXAxis='date' legendY='Test'}}
-    {{line-chart width=1000 height=300 dataBinding='content' xAxis=true XAxisOriginAtZero=false yAxis=true formatXAxis='date' tooltip=true legendY='Test'}}
+    {{line-chart width=1000 height=300 dataBinding='content' xAxis=true XAxisOriginAtZero=true yAxis=true formatXAxis='date' tooltip=true legendY='Test' yMax=100}}
   </script>
 
-  <script src="http://localhost:35729/livereload.js"></script>
 </body>
 </html>

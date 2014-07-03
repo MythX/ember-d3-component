@@ -138,6 +138,8 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       left: 35
     },
 
+    x: null,
+
     didInsertElement: function() {
       this._super();
       this.draw();
@@ -151,7 +153,7 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       this.width = width;
       this.height = height;
 
-      var formatX = this.get('formatXAxis');
+      var formatX = this.formatX = this.get('formatXAxis');
       var color = this.get('color');
       var viewXAxis = this.get('xAxis');
       var viewYAxis = this.get('yAxis');
@@ -160,12 +162,13 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
 
       var formatedData = this.formatData(data, formatX, 'DD/MM');
 
-      var x = this.createX(formatedData, formatX, XAxisOrigin);
-      var y = this.createY(formatedData);
+      var x = this.x = this.createX(formatedData, formatX, XAxisOrigin);
+      var y = this.y = this.createY(formatedData);
 
       if(color === undefined) {
         color = "#428bca";
       }
+      this.color = color;
 
       var line = this.drawLine(x, y);
 
@@ -198,7 +201,7 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
             .ease("linear-in-out")
             .attr("stroke-dashoffset", 0);
 
-      var points = this.drawPoints(formatedData, x, y);
+      var points = this.points = this.drawPoints(formatedData, this.x, y);
 
       if(toolTip) {
         this.drawTooltip(points, color);
@@ -230,7 +233,9 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
 
     createY: function(data) {
       var percentage = (5/100) * this.height;
-      return d3.scale.linear().range([this.height, 0]).domain([0, d3.max(data, function(d) { return d.valD; }) + percentage]);
+      return d3.scale.linear()
+        .range([this.height, 0])
+        .domain([0, (this.get("yMax")) ? this.get("yMax") : d3.max(data, function(d) { return d.valD; }) + percentage]);
     },
 
     drawLine: function(x, y, origin) {
@@ -277,7 +282,6 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
         .attr('cx', function(d) { return x(d.keyD) + (!origin ? (x.rangeBand() / 2) : 0); })
         .attr('cy', function(d) { return y(d.valD); })
         .attr('r', 3);
-
       return points;
     },
 
@@ -325,6 +329,31 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
 
     timeFormatter: function(date) {
       return moment(date).format('DD/MM');
+    },
+
+    updateChart: function() {
+      var formatedData = this.formatData(this.get('data'), this.formatX, 'DD/MM');
+      this.clearPoint();
+      this.clearLine();
+      this.drawPoints(formatedData, this.x, this.y);
+
+
+      var line = this.drawLine(this.x, this.y);
+
+      var path = this.chart.append('svg:path')
+        .attr('class', 'line')
+        .attr('clip-path', 'url(#clip)')
+        .attr('stroke', this.color)
+        .attr('d', line(formatedData));
+
+    }.observes('data'),
+
+    clearPoint: function() {
+      this.chart.selectAll('circle').remove();
+    },
+
+    clearLine: function() {
+      this.chart.selectAll('.line').remove();
     }
   });
   Ember.Handlebars.helper('line-chart', Ember.Chart.LineChartComponent);
