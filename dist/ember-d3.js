@@ -141,6 +141,14 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
     didInsertElement: function() {
       this._super();
       this.draw();
+      this.activeToolTip();
+    },
+
+    activeToolTip: function() {
+      $("svg g circle").tooltip({
+        'container': 'body',
+        'placement': 'left'
+      });
     },
 
     draw: function() {
@@ -156,7 +164,6 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       var viewXAxis = this.get('xAxis');
       var viewYAxis = this.get('yAxis');
       var XAxisOrigin = this.get('XAxisOriginAtZero');
-      var toolTip = this.get('tooltip');
 
       var formatedData = this.formatData(data, formatX, 'DD/MM');
 
@@ -168,7 +175,7 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       }
       this.color = color;
 
-      var line = this.drawLine(x, y);
+      this.line = this.drawLine(x, y);
 
       /* Create chart */
       this.chart = d3.select('#'+this.get('elementId'))
@@ -184,26 +191,13 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
         .attr('width', width + this.margin.left + this.margin.right)
         .attr('height', height + this.margin.top + this.margin.bottom);
 
-      var path = this.chart.append('svg:path')
-        .attr('class', 'line')
-        .attr('clip-path', 'url(#clip)')
-        .attr('stroke', color)
-        .attr('d', line(formatedData));
+      /* Draw Line */
+      this.drawLineOnSvg(formatedData);
 
       /* Animation */
-      var totalLength = path.node().getTotalLength();
-      path.attr("stroke-dasharray", totalLength+","+totalLength)
-            .attr("stroke-dashoffset", totalLength)
-            .transition()
-            .duration(1000)
-            .ease("linear-in-out")
-            .attr("stroke-dashoffset", 0);
+      this.lineAnimation();
 
-      var points = this.points = this.drawPoints(formatedData, this.x, y);
-
-      if(toolTip) {
-        this.drawTooltip(points, color);
-      }
+      this.drawPoints(formatedData, this.x, y);
 
       if(viewXAxis) {
         this.drawXAxis(x);
@@ -233,7 +227,7 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       var percentage = (5/100) * this.height;
       return d3.scale.linear()
         .range([this.height, 0])
-        .domain([0, (this.get("yMax")) ? this.get("yMax") : d3.max(data, function(d) { return d.valD; }) + percentage]);
+        .domain([0, (this.get("yMax")) ? this.get("yMax") : d3.max(data, function(d) { console.log(d.valD); return d.valD; }) + percentage]);
     },
 
     drawLine: function(x, y, origin) {
@@ -275,6 +269,9 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       var points = this.chart.selectAll('.points')
         .data(data)
         .enter().append('svg:circle')
+        .attr('data-toggle', 'tooltip')
+        .attr('title', function(d) { return d.keyD + " </br>" + d.valD; })
+        .attr("data-html", true)
         .attr('stroke', 'black')
         .attr('fill', 'black')
         .attr('cx', function(d) { return x(d.keyD) + (!origin ? (x.rangeBand() / 2) : 0); })
@@ -329,6 +326,24 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       return moment(date).format('DD/MM');
     },
 
+    lineAnimation: function() {
+      var totalLength = this.path.node().getTotalLength();
+      this.path.attr("stroke-dasharray", totalLength+","+totalLength)
+        .attr("stroke-dashoffset", totalLength)
+        .transition()
+        .duration(1000)
+        .ease("linear-in-out")
+        .attr("stroke-dashoffset", 0);
+    },
+
+    drawLineOnSvg: function(formatedData) {
+      this.path = this.chart.append('svg:path')
+        .attr('class', 'line')
+        .attr('clip-path', 'url(#clip)')
+        .attr('stroke', this.color)
+        .attr('d', this.line(formatedData));
+    },
+
     updateChart: function() {
       // clear Xaxis, circle and line
       this.chart.selectAll('.x').remove();
@@ -336,26 +351,16 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       this.chart.selectAll('.line').remove();
 
       var formatedData = this.formatData(this.get('data'), this.formatX, 'DD/MM');
-      this.drawXAxis(this.x);
       this.x = this.createX(formatedData, 'date', true);
+      this.drawXAxis(this.x);
+
+      this.line = this.drawLine(this.x, this.y);
+
+      this.drawLineOnSvg(formatedData);
+      this.lineAnimation();
+
       this.drawPoints(formatedData, this.x, this.y);
-
-      var line = this.drawLine(this.x, this.y);
-
-      var path = this.chart.append('svg:path')
-        .attr('class', 'line')
-        .attr('clip-path', 'url(#clip)')
-        .attr('stroke', this.color)
-        .attr('d', line(formatedData));
-
-      var totalLength = path.node().getTotalLength();
-
-      path.attr("stroke-dasharray", totalLength+","+totalLength)
-        .attr("stroke-dashoffset", totalLength)
-        .transition()
-        .duration(1000)
-        .ease("linear-in-out")
-        .attr("stroke-dashoffset", 0);
+      this.activeToolTip();
 
     }.observes('data')
   });

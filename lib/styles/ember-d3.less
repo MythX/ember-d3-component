@@ -1,3 +1,5 @@
+@import "/bower_components/bootstrap/less/variables";
+
 /* Charts */
 .line {
   fill: none;
@@ -15,7 +17,7 @@
   shape-rendering: crispEdges;
 }
 
-.tooltip {
+/*.tooltip {
   position: absolute;
   text-align: center;
   width: 60px;
@@ -25,4 +27,9 @@
   border: 0px;
   border-radius: 8px;
   pointer-events: none;
+}*/
+
+.tooltip.left .tooltip-inner {
+  text-align: center;
+  background-color: @brand-primary;
 }

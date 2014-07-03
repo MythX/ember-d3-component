@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="stylesheet" href="../dist/ember-d3.css" media="all">
+  <link href="./../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
   <script src="./../bower_components/jquery/dist/jquery.js"></script>
@@ -12,6 +13,7 @@
   <script src="./../bower_components/ember/ember.js"></script>
   <script src="./../bower_components/d3/d3.js"></script>
   <script src="./../bower_components/moment/moment.js"></script>
+  <script src="./../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
   <script src="./../dist/ember-d3.js"></script>
 
   <script>
@@ -35,13 +37,14 @@
 
     App.ApplicationController = Ember.ArrayController.extend({
       init : function() {
+
       },
 
       generateValues: function() {
         var newContent = [];
         var max = 100, min = 0;
 
-        for(var i = 0, l = Math.floor((Math.random() * 20) + 5); i < l; i++) {
+        for(var i = 0, l = Math.floor((Math.random() * 30)); i < l; i++) {
           var item = Ember.Object.create({
             keyD: moment().add('days', i),
             valD: Math.floor((Math.random() * max) + min)
@@ -56,20 +59,16 @@
         generateValue: function() {
           var tab = window.tab = this.generateValues();
           this.set("content", tab);
-
-          console.log(tab[2].valD);
         }
       }
     });
   </script>
 
-
   <script type="text/x-handlebars" data-template-name="application">
-  <button type="button" class="btn btn-default btn-lg" {{action 'generateValue'}} >
-    Generate new Values
-  </button>
-
     {{bar-chart width=1000 height=300 dataBinding='content' xAxis=true yAxis=true formatXAxis='date' legendY='Test'}}
+    <button type="button" class="btn btn-primary" {{action 'generateValue'}} >
+      Generate new Values
+    </button>
     {{line-chart width=1000 height=300 dataBinding='content' xAxis=true XAxisOriginAtZero=true yAxis=true formatXAxis='date' tooltip=true legendY='Test' yMax=100}}
   </script>
 
