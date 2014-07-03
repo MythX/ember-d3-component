@@ -138,8 +138,6 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       left: 35
     },
 
-    x: null,
-
     didInsertElement: function() {
       this._super();
       this.draw();
@@ -220,9 +218,9 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
     createX: function(data, type, origin) {
       var x = null;
       if(type === 'date') {
-        if(origin)
+        if(origin) {
           x = d3.scale.ordinal().rangePoints([0, this.width]).domain(data.map(function(d) { return d.keyD; }));
-        else
+        } else
           x = d3.scale.ordinal().rangeRoundBands([0, this.width], 0.1).domain(data.map(function(d) { return d.keyD; }));
       } else {
         x = d3.scale.linear().range([0, this.width]).domain([0, data.length - 1]);
@@ -332,11 +330,15 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
     },
 
     updateChart: function() {
-      var formatedData = this.formatData(this.get('data'), this.formatX, 'DD/MM');
-      this.clearPoint();
-      this.clearLine();
-      this.drawPoints(formatedData, this.x, this.y);
+      // clear Xaxis, circle and line
+      this.chart.selectAll('.x').remove();
+      this.chart.selectAll('circle').remove();
+      this.chart.selectAll('.line').remove();
 
+      var formatedData = this.formatData(this.get('data'), this.formatX, 'DD/MM');
+      this.drawXAxis(this.x);
+      this.x = this.createX(formatedData, 'date', true);
+      this.drawPoints(formatedData, this.x, this.y);
 
       var line = this.drawLine(this.x, this.y);
 
@@ -346,15 +348,16 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
         .attr('stroke', this.color)
         .attr('d', line(formatedData));
 
-    }.observes('data'),
+      var totalLength = path.node().getTotalLength();
 
-    clearPoint: function() {
-      this.chart.selectAll('circle').remove();
-    },
+      path.attr("stroke-dasharray", totalLength+","+totalLength)
+        .attr("stroke-dashoffset", totalLength)
+        .transition()
+        .duration(1000)
+        .ease("linear-in-out")
+        .attr("stroke-dashoffset", 0);
 
-    clearLine: function() {
-      this.chart.selectAll('.line').remove();
-    }
+    }.observes('data')
   });
   Ember.Handlebars.helper('line-chart', Ember.Chart.LineChartComponent);
   
