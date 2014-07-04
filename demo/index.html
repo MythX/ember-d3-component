@@ -36,9 +36,6 @@
     });
 
     App.ApplicationController = Ember.ArrayController.extend({
-      init : function() {
-
-      },
 
       generateValues: function() {
         var newContent = [];
@@ -57,8 +54,7 @@
 
       actions: {
         generateValue: function() {
-          var tab = window.tab = this.generateValues();
-          this.set("content", tab);
+          this.set("content", this.generateValues());
         }
       }
     });
@@ -69,7 +65,7 @@
     <button type="button" class="btn btn-primary" {{action 'generateValue'}} >
       Generate new Values
     </button>
-    {{line-chart width=1000 height=300 dataBinding='content' xAxis=true XAxisOriginAtZero=true yAxis=true formatXAxis='date' tooltip=true legendY='Test' yMax=100}}
+    {{line-chart width=1000 height=300 dataBinding='content' xAxis=true XAxisOriginAtZero=true yAxis=true formatXAxis='date' tooltip=true legendY='Test' color="#D52626" yMax=100}}
   </script>
 
 </body>
