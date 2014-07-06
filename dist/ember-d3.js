@@ -140,7 +140,7 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
 
     didInsertElement: function() {
       this._super();
-      this.draw();
+      this.drawTest();
       if (this.get('tooltip'))
         this.activeToolTip();
     },
@@ -150,8 +150,55 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
         'container': 'body',
         'placement': 'left'
       });
+    },
 
+    drawTest: function() {
+      var params = this.get('data');
+      var width = this.get('width') - this.margin.left - this.margin.right,
+          height = this.get('height') - this.margin.top - this.margin.bottom;
 
+      this.width = width;
+      this.height = height;
+
+      var datas = params.datas;
+      var data = [];
+      var colors = [];
+
+      this.color = "#428bca";
+      datas.forEach(function(dataset) {
+        data.push(dataset.data);
+        colors.push(dataset.color);
+      });
+
+      var formatedDatas = [];
+      data.forEach(function(d) {
+        formatedDatas.push(this.formatData(d, 'date', 'DD/MM'));
+      }, this);
+
+      var x = this.x = this.createX(formatedDatas[0], 'date', true);
+      var y = this.y = this.createY(formatedDatas[0]);
+
+      this.chart = d3.select('#'+this.get('elementId'))
+        .attr('id', 'chart')
+        .attr('width', width + this.margin.left + this.margin.right)
+        .attr('height', height + this.margin.top + this.margin.bottom)
+        .append('svg:g')
+        .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+
+      this.chart.append('svg:clipPath')
+        .attr('id', 'clip')
+        .append('svg:rect')
+        .attr('width', width + this.margin.left + this.margin.right)
+        .attr('height', height + this.margin.top + this.margin.bottom);
+
+      for(var i = 0; i < formatedDatas.length; i++) {
+        var line = this.drawLine(x, y, formatedDatas[i], true);
+        this.drawLineOnSvg(line, formatedDatas[i], colors[i]);
+        this.drawPoints(formatedDatas[i], x, y, true);
+      }
+
+      this.drawXAxis(x);
+      this.drawYAxis(y);
     },
 
     draw: function() {
@@ -169,6 +216,7 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       var XAxisOrigin = this.get('XAxisOriginAtZero');
 
       var formatedData = this.formatData(data, formatX, 'DD/MM');
+      var formatedData2 = this.formatData(data, formatX, 'DD/MM');
 
       var x = this.x = this.createX(formatedData, formatX, XAxisOrigin);
       var y = this.y = this.createY(formatedData);
@@ -178,7 +226,8 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       }
       this.color = color;
 
-      this.line = this.drawLine(x, y);
+      var line = this.drawLine(x, y);
+      var line2 = this.drawLine(x, y);
 
       /* Create chart */
       this.chart = d3.select('#'+this.get('elementId'))
@@ -195,7 +244,8 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
         .attr('height', height + this.margin.top + this.margin.bottom);
 
       /* Draw Line */
-      this.drawLineOnSvg(formatedData);
+      this.drawLineOnSvg(line, formatedData);
+      this.drawLineOnSvg(line2, formatedData2);
 
       /* Animation */
       this.lineAnimation();
@@ -317,12 +367,12 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
         .attr("stroke-dashoffset", 0);
     },
 
-    drawLineOnSvg: function(formatedData) {
+    drawLineOnSvg: function(line, formatedData, color) {
       this.path = this.chart.append('svg:path')
         .attr('class', 'line')
         .attr('clip-path', 'url(#clip)')
-        .attr('stroke', this.color)
-        .attr('d', this.line(formatedData));
+        .attr('stroke', color)
+        .attr('d', line(formatedData));
     },
 
     updateChart: function() {
@@ -335,9 +385,9 @@ Ember.Chart.LineChartComponent = Ember.Component.extend({
       this.x = this.createX(formatedData, 'date', true);
       this.drawXAxis(this.x);
 
-      this.line = this.drawLine(this.x, this.y);
+      line = this.drawLine(this.x, this.y);
 
-      this.drawLineOnSvg(formatedData);
+      this.drawLineOnSvg(line, formatedData);
       this.lineAnimation();
 
       this.drawPoints(formatedData, this.x, this.y);

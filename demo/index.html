@@ -23,6 +23,10 @@
         var newContent = [];
         var max = 100, min = 0;
         
+        var test = Ember.Object.create({
+          datas: []
+        });
+
         for(var i = 0, l = 8; i < l; i++) {
           var item = Ember.Object.create({
             keyD: moment().add('days', i),
@@ -31,11 +35,34 @@
         
           newContent[i] = item;
         }
-        return newContent;
+
+        test.datas.push(Ember.Object.create({
+          data: newContent,
+          color: "#FF0000"
+        }));
+
+        var newContent = [];
+        for(var i = 0, l = 8; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            valD: Math.floor((Math.random() * max) + min)
+          });
+        
+          newContent[i] = item;
+        }
+
+        test.datas.push(Ember.Object.create({
+          data: newContent,
+          color: "#000000",
+          points: false,
+          tooltip: false
+        }));
+
+        return test;
       }
     });
 
-    App.ApplicationController = Ember.ArrayController.extend({
+    App.ApplicationController = Ember.ObjectController.extend({
 
       generateValues: function() {
         var newContent = [];
@@ -61,7 +88,7 @@
   </script>
 
   <script type="text/x-handlebars" data-template-name="application">
-    {{bar-chart width=1000 height=300 dataBinding='content' xAxis=true yAxis=true formatXAxis='date' legendY='Test'}}
+    
     <button type="button" class="btn btn-primary" {{action 'generateValue'}} >
       Generate new Values
     </button>
