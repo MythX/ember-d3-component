@@ -15,14 +15,17 @@ Usage
     
 Content example :
 
-    [{
-      type: 'bar' (or 'line')
-      data: [{
-        keyD: your_key,
-        valD: your_value
-      }],
-      color: '#428BCA'
-    }]
+    {
+        formatXAxis: 'date',
+        datas: [{
+          type: 'bar' (or 'line')
+          data: [{
+            keyD: your_key,
+            valD: your_value
+          }],
+          color: '#428BCA'
+        }]
+    }
 
 
 Properties
