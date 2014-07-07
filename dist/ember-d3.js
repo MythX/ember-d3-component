@@ -1,13 +1,13 @@
 // ==========================================================================
 // Project:   Ember D3 Component
-// Version    v0.0.2
+// Version    v0.0.3
 // Copyright: © 2014 Antoine Moser
 // License:   MIT (see LICENSE)
 // ==========================================================================
 (function() {
 
 Ember.Chart = Ember.Namespace.create();
-Ember.Chart.VERSION = '0.0.2';
+Ember.Chart.VERSION = '0.0.3';
 
 Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
 
