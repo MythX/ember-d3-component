@@ -25,12 +25,13 @@
         var nbPoints = 10;
         
         var test = Ember.Object.create({
+          formatXAxis: 'date',
           datas: []
         });
 
         for(var i = 0, l = nbPoints; i < l; i++) {
           var item = Ember.Object.create({
-            keyD: i,
+            keyD: moment().add('days', i),
             valD: Math.floor((Math.random() * max) + min)
           });
         
@@ -46,7 +47,7 @@
         var newContent = [];
         for(var i = 0, l = nbPoints; i < l; i++) {
           var item = Ember.Object.create({
-            keyD: i,
+            keyD: moment().add('days', i),
             valD: Math.floor((Math.random() * max) + min)
           });
         
@@ -62,7 +63,7 @@
         var newContent = [];
         for(var i = 0, l = nbPoints; i < l; i++) {
           var item = Ember.Object.create({
-            keyD: i,
+            keyD: moment().add('days', i),
             valD: Math.floor((Math.random() * max) + min)
           });
         
@@ -78,7 +79,7 @@
         var newContent = [];
         for(var i = 0, l = nbPoints; i < l; i++) {
           var item = Ember.Object.create({
-            keyD: i,
+            keyD: moment().add('days', i),
             valD: Math.floor((Math.random() * max) + min)
           });
         
