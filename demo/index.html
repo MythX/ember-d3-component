@@ -37,6 +37,53 @@
         }
 
         test.datas.push(Ember.Object.create({
+          type: 'bar',
+          data: newContent,
+          color: "#FF0000"
+        }));
+
+        var newContent = [];
+        for(var i = 0, l = 8; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            valD: Math.floor((Math.random() * max) + min)
+          });
+        
+          newContent[i] = item;
+        }
+
+        test.datas.push(Ember.Object.create({
+          type: 'bar',
+          data: newContent,
+          color: "#000000",
+          points: false,
+          tooltip: false
+        }));
+
+        return test;
+      }
+    });
+
+    App.ApplicationController = Ember.ObjectController.extend({
+
+      generateValues: function() {
+        var newContent = [];
+        var max = 100, min = 0;
+        
+        var test = Ember.Object.create({
+          datas: []
+        });
+
+        for(var i = 0, l = 8; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            valD: Math.floor((Math.random() * max) + min)
+          });
+        
+          newContent[i] = item;
+        }
+
+        test.datas.push(Ember.Object.create({
           data: newContent,
           color: "#FF0000"
         }));
@@ -59,24 +106,6 @@
         }));
 
         return test;
-      }
-    });
-
-    App.ApplicationController = Ember.ObjectController.extend({
-
-      generateValues: function() {
-        var newContent = [];
-        var max = 100, min = 2;
-
-        for(var i = 0, l = Math.floor((Math.random() * 30)); i < l; i++) {
-          var item = Ember.Object.create({
-            keyD: moment().add('days', i),
-            valD: Math.floor((Math.random() * max) + min)
-          });
-
-          newContent[i] = item;
-        }
-        return newContent;
       },
 
       actions: {
@@ -89,10 +118,13 @@
 
   <script type="text/x-handlebars" data-template-name="application">
     
-    <button type="button" class="btn btn-primary" {{action 'generateValue'}} >
+
+    
+
+    {{ draw-chart width=1000 height=300 dataBinding='content' }}
+        <button type="button" class="btn btn-primary" {{action 'generateValue'}} >
       Generate new Values
     </button>
-    {{line-chart width=1000 height=300 dataBinding='content' xAxis=true XAxisOriginAtZero=true yAxis=true formatXAxis='date' tooltip=true legendY='Test' color="#D52626" yMax=100}}
   </script>
 
 </body>
