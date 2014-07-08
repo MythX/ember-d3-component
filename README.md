@@ -17,7 +17,7 @@ Content example :
 
     {
         formatXAxis: 'date',
-        datas: [{
+        charts: [{
           type: 'bar' (or 'line')
           data: [{
             keyD: your_key,
