@@ -157,6 +157,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     var types         = [];
     var formatedDatas = [];
     var formatXAxis   = params.formatXAxis || 'numeric';
+    var legendY       = params.legendY || '';
 
     charts.forEach(function(dataset) {
       data.push(dataset.data);
@@ -199,7 +200,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
 
     this.drawXAxis(x);
-    this.drawYAxis(y);
+    this.drawYAxis(y, legendY);
 
     // Draw lines and bar
     if (barChartData.length > 1)
