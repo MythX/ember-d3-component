@@ -158,6 +158,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     var formatedDatas = [];
     var formatXAxis   = params.formatXAxis || 'numeric';
     var legendY       = params.legendY || '';
+    var yAxis         = params.yAxis;
 
     charts.forEach(function(dataset) {
       data.push(dataset.data);
@@ -188,8 +189,9 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     var x    = this.x = this.createX(formatedDatas[0], formatXAxis, false, barChartData);
     
     // Search max Y
-    var maxY = this.searchMaxY(formatedDatas);
+    var maxY = this.searchMaxY(formatedDatas, yAxis);
     var y    = this.y = this.createY(maxY);
+    var y2 = this.createY(150);
 
     // Draw chart
     this.chart = d3.select('#'+this.get('elementId'))
@@ -200,7 +202,9 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
 
     this.drawXAxis(x);
-    this.drawYAxis(y, legendY);
+    this.drawYAxis(y, legendY, 'left');
+    this.drawYAxis(y2, legendY, 'right');
+
 
     // Draw lines and bar
     if (barChartData.length > 1)
@@ -215,12 +219,12 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
 
     for(var i = 0, j = 0; i < formatedDatas.length; i++) {
       if (types[i] === 'line') {
-        var line = this.drawLine(x, y, formatedDatas[i], false);
+        var line = this.drawLine(x, y2, formatedDatas[i], false);
         var path = this.drawLineOnSvg(line, formatedDatas[i], colorLines[j]);
         if(animatedLines[j] === 'true') {
           this.lineAnimation(path);
         }
-        this.drawPoints(formatedDatas[i], x, y, false);
+        this.drawPoints(formatedDatas[i], x, y2, false);
         j++;
       }
     }
@@ -246,7 +250,6 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
   },
 
   createY: function(max) {
-    var percentage = (5/100) * this.height;
     return d3.scale.linear()
       .range([this.height, 0])
       .domain([0, (this.get("yMax")) ? this.get("yMax") : max]);
@@ -327,6 +330,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       bar.selectAll("rect")
         .data(function (d) { return d.valD; })
         .enter().append("rect")
+          .attr('class', 'bar')
           .attr("width", x1.rangeBand())
           .attr("x", function(d, i) { return x1("bar"+i); })
           .attr("y", function(d) { return y(d); })
@@ -356,17 +360,24 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     return xAxis;
   },
 
-  drawYAxis: function(y, legendY) {
-    var yAxis = d3.svg.axis().scale(y).orient("left");
+  drawYAxis: function(y, legendY, orient) {
+    var yAxis = d3.svg.axis().scale(y).orient(orient);
 
-    this.chart.append('svg:g')
-      .attr('class', 'y axis')
-      .call(yAxis)
-      .append("text")
-      .attr('y', -20)
-      .attr('x', -20)
-      .attr("dy", ".71em")
-      .text(legendY);
+    if (orient === 'left') {
+      this.chart.append('svg:g')
+        .attr('class', 'y axis')
+        .call(yAxis)
+        .append("text")
+        .attr('y', -20)
+        .attr('x', -20)
+        .attr("dy", ".71em")
+        .text(legendY);
+    } else {
+      this.chart.append('svg:g')
+        .attr('class', 'y axis')
+        .attr('transform', 'translate('+(this.width)  + ',0)')
+        .call(yAxis);
+    }
 
     return yAxis;
   },

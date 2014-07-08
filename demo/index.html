@@ -27,7 +27,16 @@
         var test = Ember.Object.create({
           formatXAxis: 'date',
           charts: [],
-          legendY: 'Legend Y'
+          legendY: 'Legend Y',
+          yAxis: [{
+            name: 'y1',
+            color: 'black',
+            position: 'left'
+          }, {
+            name: 'y2',
+            color: 'black',
+            position: 'right'
+          }]
         });
 
         for(var i = 0, l = nbPoints; i < l; i++) {
