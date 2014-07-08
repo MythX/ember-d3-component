@@ -26,7 +26,7 @@
         
         var test = Ember.Object.create({
           formatXAxis: 'date',
-          datas: []
+          charts: []
         });
 
         for(var i = 0, l = nbPoints; i < l; i++) {
@@ -38,7 +38,7 @@
           newContent[i] = item;
         }
 
-        test.datas.push(Ember.Object.create({
+        test.charts.push(Ember.Object.create({
           type: 'line',
           data: newContent,
           color: "#FF0000"
@@ -54,7 +54,7 @@
           newContent[i] = item;
         }
 
-        test.datas.push(Ember.Object.create({
+        test.charts.push(Ember.Object.create({
           type: 'bar',
           data: newContent,
           color: "#70818F"
@@ -70,7 +70,7 @@
           newContent[i] = item;
         }
 
-        test.datas.push(Ember.Object.create({
+        test.charts.push(Ember.Object.create({
           type: 'bar',
           data: newContent,
           color: "#428bca"
@@ -86,7 +86,7 @@
           newContent[i] = item;
         }
 
-        test.datas.push(Ember.Object.create({
+        test.charts.push(Ember.Object.create({
           type: 'line',
           data: newContent,
           color: "#000000"
