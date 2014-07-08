@@ -31,3 +31,24 @@ Content example :
 Properties
 ------------------
 
+General :
+
+    formatXAxis: 'date' or 'numeric' (not required)
+    charts: [] (required)
+
+Line-chart :
+
+    type: 'line' (required)
+    data: [] (required)
+    color: ''
+    animation: true or false (not required)
+    
+    
+Bar-chart :
+
+    type: 'bar' (required)
+    data: [] (required)
+    color: '' (not required) - For single color
+    colors: [] (not required) - For multi-color, you need one color for one bar
+    
+    
