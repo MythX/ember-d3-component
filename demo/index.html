@@ -41,23 +41,8 @@
         test.charts.push(Ember.Object.create({
           type: 'line',
           data: newContent,
-          color: "#FF0000"
-        }));
-
-        var newContent = [];
-        for(var i = 0, l = nbPoints; i < l; i++) {
-          var item = Ember.Object.create({
-            keyD: moment().add('days', i),
-            valD: Math.floor((Math.random() * max) + min)
-          });
-        
-          newContent[i] = item;
-        }
-
-        test.charts.push(Ember.Object.create({
-          type: 'bar',
-          data: newContent,
-          color: "#70818F"
+          color: "#FF0000",
+          animation: true
         }));
 
         var newContent = [];
@@ -87,9 +72,27 @@
         }
 
         test.charts.push(Ember.Object.create({
+          type: 'bar',
+          data: newContent,
+          color: "#70818F"
+        }));
+
+
+        var newContent = [];
+        for(var i = 0, l = nbPoints; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            valD: Math.floor((Math.random() * max) + min)
+          });
+        
+          newContent[i] = item;
+        }
+
+        test.charts.push(Ember.Object.create({
           type: 'line',
           data: newContent,
-          color: "#000000"
+          color: "#000000",
+          animation: false
         }));
 
 
