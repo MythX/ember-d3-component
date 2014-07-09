@@ -27,15 +27,16 @@
         var test = Ember.Object.create({
           formatXAxis: 'date',
           charts: [],
-          legendY: 'Legend Y',
           yAxis: [{
             name: 'y1',
             color: 'black',
-            position: 'left'
+            position: 'left',
+            legend: 'Legend left'
           }, {
             name: 'y2',
             color: 'black',
-            position: 'right'
+            position: 'right',
+            legend: 'Legend right'
           }]
         });
 
@@ -52,6 +53,7 @@
           type: 'line',
           data: newContent,
           color: "#FF0000",
+          yAxis: 'y2',
           animation: true
         }));
 
@@ -68,6 +70,7 @@
         test.charts.push(Ember.Object.create({
           type: 'bar',
           data: newContent,
+          yAxis: 'y1',
           color: "#428bca"
         }));
 
@@ -84,6 +87,7 @@
         test.charts.push(Ember.Object.create({
           type: 'bar',
           data: newContent,
+          yAxis: 'y1',
           color: "#70818F"
         }));
 
@@ -102,6 +106,7 @@
           type: 'line',
           data: newContent,
           color: "#000000",
+          yAxis: 'y2',
           animation: false
         }));
 
@@ -131,6 +136,7 @@
 
         test.datas.push(Ember.Object.create({
           data: newContent,
+          yAxis: 'y1',
           color: "#FF0000"
         }));
 
@@ -146,6 +152,7 @@
 
         test.datas.push(Ember.Object.create({
           data: newContent,
+          yAxis: 'y1',
           color: "#000000",
           points: false,
           tooltip: false
