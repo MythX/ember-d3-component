@@ -27,16 +27,15 @@
         var test = Ember.Object.create({
           formatXAxis: 'date',
           charts: [],
+          xAxis: {
+            formatXAxis: 'date',
+            origin: false
+          },
           yAxis: [{
             name: 'y1',
             color: 'black',
             position: 'left',
             legend: 'Legend left'
-          }, {
-            name: 'y2',
-            color: 'black',
-            position: 'right',
-            legend: 'Legend right'
           }]
         });
 
@@ -53,7 +52,7 @@
           type: 'line',
           data: newContent,
           color: "#FF0000",
-          yAxis: 'y2',
+          yAxis: 'y1',
           animation: true
         }));
 
@@ -106,7 +105,7 @@
           type: 'line',
           data: newContent,
           color: "#000000",
-          yAxis: 'y2',
+          yAxis: 'y1',
           animation: false
         }));
 
@@ -120,12 +119,29 @@
       generateValues: function() {
         var newContent = [];
         var max = 100, min = 0;
+        var nbPoints = 10;
         
         var test = Ember.Object.create({
-          datas: []
+          formatXAxis: 'date',
+          charts: [],
+          xAxis: {
+            formatXAxis: 'date',
+            origin: false
+          },
+          yAxis: [{
+            name: 'y1',
+            color: 'black',
+            position: 'left',
+            legend: 'Legend left'
+          }, {
+            name: 'y2',
+            color: 'black',
+            position: 'right',
+            legend: 'Legend right'
+          }]
         });
 
-        for(var i = 0, l = 8; i < l; i++) {
+        for(var i = 0, l = nbPoints; i < l; i++) {
           var item = Ember.Object.create({
             keyD: moment().add('days', i),
             valD: Math.floor((Math.random() * max) + min)
@@ -134,14 +150,16 @@
           newContent[i] = item;
         }
 
-        test.datas.push(Ember.Object.create({
+        test.charts.push(Ember.Object.create({
+          type: 'line',
           data: newContent,
-          yAxis: 'y1',
-          color: "#FF0000"
+          color: "#FF0000",
+          yAxis: 'y2',
+          animation: false
         }));
 
         var newContent = [];
-        for(var i = 0, l = 8; i < l; i++) {
+        for(var i = 0, l = nbPoints; i < l; i++) {
           var item = Ember.Object.create({
             keyD: moment().add('days', i),
             valD: Math.floor((Math.random() * max) + min)
@@ -150,13 +168,49 @@
           newContent[i] = item;
         }
 
-        test.datas.push(Ember.Object.create({
+        test.charts.push(Ember.Object.create({
+          type: 'bar',
           data: newContent,
           yAxis: 'y1',
-          color: "#000000",
-          points: false,
-          tooltip: false
+          color: "#428bca"
         }));
+
+        var newContent = [];
+        for(var i = 0, l = nbPoints; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            valD: Math.floor((Math.random() * max) + min)
+          });
+        
+          newContent[i] = item;
+        }
+
+        test.charts.push(Ember.Object.create({
+          type: 'bar',
+          data: newContent,
+          yAxis: 'y1',
+          color: "#70818F"
+        }));
+
+
+        var newContent = [];
+        for(var i = 0, l = nbPoints; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            valD: Math.floor((Math.random() * max) + min)
+          });
+        
+          newContent[i] = item;
+        }
+
+        test.charts.push(Ember.Object.create({
+          type: 'line',
+          data: newContent,
+          color: "#000000",
+          yAxis: 'y2',
+          animation: true
+        }));
+
 
         return test;
       },
@@ -170,10 +224,6 @@
   </script>
 
   <script type="text/x-handlebars" data-template-name="application">
-    
-
-    
-
     {{ draw-chart width=1000 height=300 dataBinding='content' }}
         <button type="button" class="btn btn-primary" {{action 'generateValue'}} >
       Generate new Values

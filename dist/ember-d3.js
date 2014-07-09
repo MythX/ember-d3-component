@@ -1,13 +1,13 @@
 // ==========================================================================
 // Project:   Ember D3 Component
-// Version    v0.0.5
+// Version    v0.1.0
 // Copyright: © 2014 Antoine Moser
 // License:   MIT (see LICENSE)
 // ==========================================================================
 (function() {
 
 Ember.Chart = Ember.Namespace.create();
-Ember.Chart.VERSION = '0.0.5';
+Ember.Chart.VERSION = '0.1.0';
 
 Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
 
@@ -133,17 +133,30 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
   tagName: 'svg',
   margin: {
     top: 35,
-    right: 35,
+    right: 60,
     bottom: 20,
     left: 35
   },
 
   didInsertElement: function() {
     this._super();
+    this.initialize();
     this.draw();
   },
 
-  draw: function() {
+  initialize: function() {
+    var width     = this.width  = this.get('width') - this.margin.left - this.margin.right,
+        height    = this.height = this.get('height') - this.margin.top - this.margin.bottom;
+
+    this.chart = d3.select('#'+this.get('elementId'))
+      .attr('id', 'chart')
+      .attr('width', this.width + this.margin.left + this.margin.right)
+      .attr('height', this.height + this.margin.top + this.margin.bottom)
+      .append('svg:g')
+      .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+  },
+
+  draw: function(redraw) {
     var params    = this.params = this.get('data');
 
     var charts        = params.charts;
@@ -156,16 +169,10 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     var formatedDatas = [];
     var formatXAxis   = params.formatXAxis || 'numeric';
     var yAxis         = params.yAxis;
+    var xAxis         = params.xAxis;
     var yAxisArray    = [];
     var yAxisLine     = [];
     var yAxisBar      = '';
-
-    if (yAxis.length > 1) {
-      this.margin.right = this.margin.right + 25;
-    }
-
-    var width     = this.width  = this.get('width') - this.margin.left - this.margin.right,
-        height    = this.height = this.get('height') - this.margin.top - this.margin.bottom;
 
     // Search YAxis
     yAxis.forEach(function(axis) {
@@ -212,22 +219,13 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     });
 
     data.forEach(function(d) {
-      formatedDatas.push(this.formatData(d, formatXAxis, 'DD/MM'));
+      formatedDatas.push(this.formatData(d, xAxis.formatXAxis, 'DD/MM'));
     }, this);
 
     // Format barchat data
     var barChartData = this.barChartData(formatedDatas, types);
-    var x    = this.x = this.createX(formatedDatas[0], formatXAxis, false, barChartData);
+    var x    = this.x = this.createX(formatedDatas[0], xAxis.formatXAxis, xAxis.origin, barChartData);
     
-    // Draw chart
-    this.chart = d3.select('#'+this.get('elementId'))
-      .attr('id', 'chart')
-      .attr('width', width + this.margin.left + this.margin.right)
-      .attr('height', height + this.margin.top + this.margin.bottom)
-      .append('svg:g')
-      .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
-
-        // Search max Y
     // Create YAxis
     yAxisArray.forEach(function (yAxis) {
       yAxis.max = this.searchMaxY(yAxis.data);
@@ -238,12 +236,12 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
 
     // Draw lines and bar
     if (barChartData.length > 1)
-      this.drawBarChart(height, x, this.searchYAxis(yAxisBar, yAxisArray), barChartData, colorBars);
+      this.drawBarChart(this.height, x, this.searchYAxis(yAxisBar, yAxisArray), barChartData, colorBars);
     else if (barChartData.length === 1) {
       if(colorBars.length === 0) {
-        this.drawBarChart(height, x, this.searchYAxis(yAxisBar, yAxisArray), barChartData, colorBar, true);
+        this.drawBarChart(this.height, x, this.searchYAxis(yAxisBar, yAxisArray), barChartData, colorBar, true);
       } else {
-        this.drawBarChart(height, x, this.searchYAxis(yAxisBar, yAxisArray), barChartData, colorBars, false);
+        this.drawBarChart(this.height, x, this.searchYAxis(yAxisBar, yAxisArray), barChartData, colorBars, false);
       }
     }
 
@@ -470,6 +468,20 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     }
     return formatedData;
   },
+
+  clearCharts: function() {
+    this.chart.selectAll('.x').remove();
+    this.chart.selectAll('.y').remove();
+    this.chart.selectAll('circle').remove();
+    this.chart.selectAll('.line').remove();
+    this.chart.selectAll('.bar').remove();
+    this.chart.selectAll('.g').remove();
+  },
+
+  updateCharts: function() {
+    this.clearCharts();
+    this.draw();
+  }.observes('data')
 
 });
 
