@@ -31,8 +31,8 @@ Content example :
           position: 'left'
         }],
         charts: [{
-          type: 'bar'
-          color: '#428BCA'
+          type: 'bar',
+          color: '#428BCA',
           yAxis: 'y1',
           data: [{
             keyD: your_key,
@@ -44,6 +44,11 @@ Content example :
 
 Properties
 ------------------
+
+Helper :
+
+    width: Integer (not required)
+    height: Integer (required)
 
 General :
 
