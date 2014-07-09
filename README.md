@@ -17,8 +17,15 @@ Content example :
 
     {
         formatXAxis: 'date',
+        yAxis: [{
+          name: 'y1',
+          color: 'black',
+          legend: 'Legend 1',
+          position: 'left'
+        }],
         charts: [{
           type: 'bar' (or 'line')
+          yAxis: 'y1',
           data: [{
             keyD: your_key,
             valD: your_value
@@ -34,11 +41,20 @@ Properties
 General :
 
     formatXAxis: 'date' or 'numeric' (not required)
+    yAxis: [] (required)
     charts: [] (required)
+
+yAxis :
+
+    name: String (required)
+    color: String (not required)
+    legend: String (not required)
+    position: String (left or right) (required)
 
 Line-chart :
 
     type: 'line' (required)
+    yAxis: String (required)
     data: [] (required)
     color: ''
     animation: true or false (not required)
@@ -47,6 +63,7 @@ Line-chart :
 Bar-chart :
 
     type: 'bar' (required)
+    yAxis: String (required)
     data: [] (required)
     color: '' (not required) - For single color
     colors: [] (not required) - For multi-color, you need one color for one bar
