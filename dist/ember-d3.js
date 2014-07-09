@@ -1,13 +1,13 @@
 // ==========================================================================
 // Project:   Ember D3 Component
-// Version    v0.0.4
+// Version    v0.0.5
 // Copyright: © 2014 Antoine Moser
 // License:   MIT (see LICENSE)
 // ==========================================================================
 (function() {
 
 Ember.Chart = Ember.Namespace.create();
-Ember.Chart.VERSION = '0.0.4';
+Ember.Chart.VERSION = '0.0.5';
 
 Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
 
@@ -156,7 +156,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     var formatedDatas = [];
     var formatXAxis   = params.formatXAxis || 'numeric';
     var yAxis         = params.yAxis;
-    var yAxisArray      = [];
+    var yAxisArray    = [];
     var yAxisLine     = [];
     var yAxisBar      = '';
 
