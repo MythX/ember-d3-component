@@ -20,7 +20,10 @@ Usage
 Content example :
 
     {
-        formatXAxis: 'date',
+        xAxis: {
+          format: 'date',
+          origin: false
+        },
         yAxis: [{
           name: 'y1',
           color: 'black',
@@ -28,13 +31,13 @@ Content example :
           position: 'left'
         }],
         charts: [{
-          type: 'bar' (or 'line')
+          type: 'bar'
+          color: '#428BCA'
           yAxis: 'y1',
           data: [{
             keyD: your_key,
             valD: your_value
           }],
-          color: '#428BCA'
         }]
     }
 
@@ -44,9 +47,14 @@ Properties
 
 General :
 
-    formatXAxis: 'date' or 'numeric' (not required)
-    yAxis: [] (required)
-    charts: [] (required)
+    xAxis: Object (required)
+    yAxis: Array (required)
+    charts: Array (required)
+
+xAxis :
+
+    format: String (date or numeric) (required)
+    origin: Boolean (required)
 
 yAxis :
 
@@ -59,17 +67,24 @@ Line-chart :
 
     type: 'line' (required)
     yAxis: String (required)
-    data: [] (required)
-    color: ''
-    animation: true or false (not required)
+    data: Array (required)
+    color: String (required)
+    animation: Boolean (not required)
     
     
 Bar-chart :
 
     type: 'bar' (required)
     yAxis: String (required)
-    data: [] (required)
-    color: '' (not required) - For single color
-    colors: [] (not required) - For multi-color, you need one color for one bar
+    data: Array (required)
+    color: String (not required) - For single color
+    colors: Array (not required) - For multi-color, you need one color for one bar
+    
+Data : 
+
+    [{
+      keyD: key,
+      valD: val,
+     }]
     
     
