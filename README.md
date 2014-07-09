@@ -7,6 +7,10 @@ Installation
 ------------------
 
     bower install https://github.com/MythX/ember-d3-component.git
+    
+Include d3.js and ember-d3.js
+
+    <script src="bower_components/ember-d3-component/dist/ember-d3.js"></script>
 
 Usage
 ------------------
