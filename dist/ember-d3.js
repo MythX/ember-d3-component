@@ -261,8 +261,13 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
         }
 
         j++;
+      } else if (types[i] === 'area') {
+        var area = this.drawArea(x, this.searchYAxis(yAxisLine[0], yAxisArray));
+        var path = this.drawAreaOnSvg(area, formatedDatas[i], "#FF0000");
       }
     }
+
+    this.drawAreaOnSvg(this.drawArea(x, this.searchYAxis(yAxisLine[0], yAxisArray)), formatedDatas[0], "#FF0000");
   },
 
   createX: function(data, type, origin, barChartData) {
@@ -382,6 +387,27 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
           .attr("height", function(d) { return height - y(d); })
           .attr("fill", function(d, i) { j++; return colors[j]; });
     }
+  },
+
+  drawArea: function(x, y) {
+    var area = d3.svg.area()
+      .interpolate('monotone')
+      .x(function(d) { return x(d.keyD) + (x.rangeBand() / 2); })
+      .y0(this.height)
+      .y1(function(d) { console.log(d); return y(d.valD); });
+
+    return area;
+  },
+
+  drawAreaOnSvg: function(area, formatedData, color) {
+    var path = this.chart.append('svg:path')
+      .attr('class', 'area')
+      .attr('stroke', 'black')
+      .attr('stroke-width', '3px')
+      .attr('fill', color)
+      .attr('d', area(formatedData));
+
+    return path;
   },
 
   drawXAxis: function(x, legendX, height) {
