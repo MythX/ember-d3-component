@@ -22,6 +22,7 @@ Content example :
     {
         xAxis: {
           format: 'date',
+          dateFormat: 'DD/MM',
           origin: false
         },
         yAxis: [{
@@ -59,6 +60,7 @@ General :
 xAxis :
 
     format: String (date or numeric) (required)
+    dateFormat: String (required if format = 'date')
     origin: Boolean (required)
 
 yAxis :
@@ -75,7 +77,7 @@ Line-chart :
     data: Array (required)
     color: String (required)
     animation: Boolean (not required)
-    
+    interpolate: String (not required) ['monotone', 'basic']
     
 Bar-chart :
 
@@ -85,6 +87,13 @@ Bar-chart :
     color: String (not required) - For single color
     colors: Array (not required) - For multi-color, you need one color for one bar
     
+Area-chart:
+    type: 'area' (required)
+    yAxis: String (required)
+    data: Array (required)
+    color: String (required)
+    interpolate: String (not required) ['monotone', 'basic']
+
 Data : 
 
     [{
