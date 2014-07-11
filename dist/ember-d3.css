@@ -15,3 +15,6 @@
 .tooltip.left .tooltip-inner {
   text-align: center;
 }
+.area {
+  opacity: 0.2;
+}

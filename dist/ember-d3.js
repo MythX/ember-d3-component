@@ -167,9 +167,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
 
     var charts        = params.charts;
     var data          = [];
-    var colorLines    = [];
     var colorBars     = [];
-    var animatedLines = [];
     var colorBar      = [];
     var types         = [];
     var formatedDatas = [];
@@ -177,8 +175,11 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     var yAxis         = params.yAxis;
     var xAxis         = params.xAxis;
     var yAxisArray    = [];
-    var yAxisLine     = [];
     var yAxisBar      = '';
+
+    var lineCharts    = [];
+    var areaCharts    = [];
+    var barChart      = [];
 
     // Search YAxis
     yAxis.forEach(function(axis) {
@@ -206,14 +207,17 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
         yAxisArray[0].data.push(dataset.data);
       }
 
+      formatedData = this.formatData(dataset.data, xAxis);
       if (dataset.type === 'line') {
-        colorLines.push(dataset.color);
-        yAxisLine.push(dataset.yAxis);
-        if(dataset.animation !== undefined && dataset.animation === true) {
-          animatedLines.push('true');
-        } else {
-          animatedLines.push('false');
-        }
+        var animation = dataset.animation ? true : false;
+        lineCharts.push(Ember.Object.create({
+          data: formatedData,
+          color: dataset.color,
+          animation: animation,
+          points: true,
+          interpolate: 'monotone',
+          yAxis: dataset.yAxis
+        }));
       } else if(dataset.type === 'bar') {
         yAxisBar = dataset.yAxis;
         if(dataset.color !== undefined) {
@@ -221,11 +225,19 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
         } else {
           colorBar = dataset.colors;
         }
+      } else if(dataset.type === 'area') {
+        areaCharts.push(Ember.Object.create({
+          data: formatedData,
+          color: dataset.color,
+          interpolate: 'monotone',
+          yAxis: dataset.yAxis
+        }));
       }
-    });
+    }, this);
+
 
     data.forEach(function(d) {
-      formatedDatas.push(this.formatData(d, xAxis.format, 'DD/MM'));
+      formatedDatas.push(this.formatData(d, xAxis));
     }, this);
 
     // Format barchat data
@@ -251,23 +263,22 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       }
     }
 
-    for(var i = 0, j = 0; i < formatedDatas.length; i++) {
-      if (types[i] === 'line') {
-        var line = this.drawLine(x, this.searchYAxis(yAxisLine[j], yAxisArray), formatedDatas[i], false);
-        var path = this.drawLineOnSvg(line, formatedDatas[i], colorLines[j]);
-        this.drawPoints(formatedDatas[i], x, this.searchYAxis(yAxisLine[j], yAxisArray), false);
-        if(animatedLines[j] === 'true') {
-          this.lineAnimation(path);
-        }
+    lineCharts.forEach(function(l) {
+      var line = this.drawLine(x, this.searchYAxis(l.yAxis, yAxisArray), l.data, xAxis.origin);
+      var path = this.drawLineOnSvg(line, l.data, l.color);
+      this.drawPoints(l.data, x, this.searchYAxis(l.yAxis, yAxisArray), xAxis.origin);
 
-        j++;
-      } else if (types[i] === 'area') {
-        var area = this.drawArea(x, this.searchYAxis(yAxisLine[0], yAxisArray));
-        var path = this.drawAreaOnSvg(area, formatedDatas[i], "#FF0000");
+      if(l.animation === true) {
+        this.lineAnimation(path);
       }
-    }
+    }, this);
 
-    this.drawAreaOnSvg(this.drawArea(x, this.searchYAxis(yAxisLine[0], yAxisArray)), formatedDatas[0], "#FF0000");
+    areaCharts.forEach(function(a) {
+      var area = this.drawArea(x, this.searchYAxis(a.yAxis, yAxisArray));
+      path = this.drawAreaOnSvg(area, a.data, a.color);
+      var line = this.drawLine(x, this.searchYAxis(a.yAxis, yAxisArray), a.data, false);
+      path = this.drawLineOnSvg(line, a.data, a.color);
+    }, this);
   },
 
   createX: function(data, type, origin, barChartData) {
@@ -296,7 +307,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
   },
 
   drawLine: function(x, y, data, origin) {
-    var line = d3.svg.line().y(function(d) { return y(d.valD); });
+    var line = d3.svg.line().interpolate('monotone').y(function(d) { return y(d.valD); });
     if(!origin) {
       line.x(function(d) { return x(d.keyD) + (x.rangeBand() / 2); });
     } else {
@@ -394,7 +405,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       .interpolate('monotone')
       .x(function(d) { return x(d.keyD) + (x.rangeBand() / 2); })
       .y0(this.height)
-      .y1(function(d) { console.log(d); return y(d.valD); });
+      .y1(function(d) { return y(d.valD); });
 
     return area;
   },
@@ -402,8 +413,6 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
   drawAreaOnSvg: function(area, formatedData, color) {
     var path = this.chart.append('svg:path')
       .attr('class', 'area')
-      .attr('stroke', 'black')
-      .attr('stroke-width', '3px')
       .attr('fill', color)
       .attr('d', area(formatedData));
 
@@ -423,7 +432,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
 
   drawYAxis: function(y, legendY, orient, color) {
     var yAxis = d3.svg.axis().scale(y).orient(orient);
-
+ 
     if (orient === 'left') {
       this.chart.append('svg:g')
         .attr('class', 'y axis')
@@ -483,18 +492,20 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     return result;
   },
 
-  formatData: function(data, type, format) {
+  formatData: function(data, xAxis) {
     var formatedData = [];
 
-    if(type === 'date') {
-      data.forEach(function(date) {
-        var formatDay = moment(date.keyD).format(format);
-        var day = Ember.Object.create({
-          keyD: formatDay,
-          valD: date.valD
+    if(xAxis.format === 'date') {
+      if(xAxis.dateFormat !== undefined) {
+        data.forEach(function(date) {
+          var formatDay = moment(date.keyD).format(xAxis.dateFormat);
+          var day = Ember.Object.create({
+            keyD: formatDay,
+            valD: date.valD
+          });
+          formatedData.push(day);
         });
-        formatedData.push(day);
-      });
+      }
     } else {
       formatedData = data;
     }
@@ -506,6 +517,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     this.chart.selectAll('.y').remove();
     this.chart.selectAll('circle').remove();
     this.chart.selectAll('.line').remove();
+    this.chart.selectAll('.area').remove();
     this.chart.selectAll('.bar').remove();
     this.chart.selectAll('.g').remove();
   },
