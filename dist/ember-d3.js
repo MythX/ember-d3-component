@@ -1,13 +1,13 @@
 // ==========================================================================
 // Project:   Ember D3 Component
-// Version    v0.2.0
+// Version    v0.2.1
 // Copyright: © 2014 Antoine Moser
 // License:   MIT (see LICENSE)
 // ==========================================================================
 (function() {
 
 Ember.Chart = Ember.Namespace.create();
-Ember.Chart.VERSION = '0.2.0';
+Ember.Chart.VERSION = '0.2.1';
 
 Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
 
@@ -134,7 +134,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
   margin: {
     top: 35,
     right: 30,
-    bottom: 20,
+    bottom: 40,
     left: 35
   },
 
@@ -253,7 +253,8 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       yAxis.y = this.createY(yAxis.max);
       this.drawYAxis(yAxis.y, yAxis.legend, yAxis.orient, yAxis.color);
     }.bind(this));
-    this.drawXAxis(x);
+
+    this.drawXAxis(x, xAxis.rotateLegend);
 
     // Draw lines and bar
     if (barChartData.length > 1)
@@ -422,13 +423,22 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     return path;
   },
 
-  drawXAxis: function(x, legendX, height) {
+  drawXAxis: function(x, rotate) {
     var xAxis = d3.svg.axis().scale(x).orient("bottom");
 
-    this.chart.append('svg:g')
+    var axis = this.chart.append('svg:g')
       .attr('class', 'x axis')
       .attr('transform', 'translate(0,'+this.height+')')
       .call(xAxis);
+      
+    if (rotate === true) {
+      console.log('toto');
+      axis.selectAll("text")
+      .style("text-anchor", "end")
+      .attr("transform", function(d) {
+        return "rotate(-65)";
+      });
+    }
 
     return xAxis;
   },

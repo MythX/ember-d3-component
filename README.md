@@ -62,6 +62,7 @@ xAxis :
     format: String (date or numeric) (required)
     dateFormat: String (required if format = 'date')
     origin: Boolean (required)
+    rotateLegend: Boolean (not required)
 
 yAxis :
 
