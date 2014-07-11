@@ -208,14 +208,17 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       }
 
       formatedData = this.formatData(dataset.data, xAxis);
+      var interpolate = dataset.interpolate ? dataset.interpolate : '';
+
       if (dataset.type === 'line') {
         var animation = dataset.animation ? true : false;
+        
         lineCharts.push(Ember.Object.create({
           data: formatedData,
           color: dataset.color,
           animation: animation,
           points: true,
-          interpolate: 'monotone',
+          interpolate: interpolate,
           yAxis: dataset.yAxis
         }));
       } else if(dataset.type === 'bar') {
@@ -229,7 +232,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
         areaCharts.push(Ember.Object.create({
           data: formatedData,
           color: dataset.color,
-          interpolate: 'monotone',
+          interpolate: interpolate,
           yAxis: dataset.yAxis
         }));
       }
@@ -264,7 +267,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     }
 
     lineCharts.forEach(function(l) {
-      var line = this.drawLine(x, this.searchYAxis(l.yAxis, yAxisArray), l.data, xAxis.origin);
+      var line = this.drawLine(x, this.searchYAxis(l.yAxis, yAxisArray), l.data, l.interpolate, xAxis.origin);
       var path = this.drawLineOnSvg(line, l.data, l.color);
       this.drawPoints(l.data, x, this.searchYAxis(l.yAxis, yAxisArray), xAxis.origin);
 
@@ -276,7 +279,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     areaCharts.forEach(function(a) {
       var area = this.drawArea(x, this.searchYAxis(a.yAxis, yAxisArray));
       path = this.drawAreaOnSvg(area, a.data, a.color);
-      var line = this.drawLine(x, this.searchYAxis(a.yAxis, yAxisArray), a.data, false);
+      var line = this.drawLine(x, this.searchYAxis(a.yAxis, yAxisArray), a.data, l.interpolate, xAxis.origin);
       path = this.drawLineOnSvg(line, a.data, a.color);
     }, this);
   },
@@ -306,8 +309,8 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       .domain([0, (this.get("yMax")) ? this.get("yMax") : max]);
   },
 
-  drawLine: function(x, y, data, origin) {
-    var line = d3.svg.line().interpolate('monotone').y(function(d) { return y(d.valD); });
+  drawLine: function(x, y, data, interpolate, origin) {
+    var line = d3.svg.line().interpolate(interpolate).y(function(d) { return y(d.valD); });
     if(!origin) {
       line.x(function(d) { return x(d.keyD) + (x.rangeBand() / 2); });
     } else {
