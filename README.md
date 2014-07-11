@@ -88,6 +88,7 @@ Bar-chart :
     colors: Array (not required) - For multi-color, you need one color for one bar
     
 Area-chart:
+
     type: 'area' (required)
     yAxis: String (required)
     data: Array (required)
