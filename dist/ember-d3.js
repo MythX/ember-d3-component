@@ -1,13 +1,13 @@
 // ==========================================================================
 // Project:   Ember D3 Component
-// Version    v0.1.1
+// Version    v0.2.0
 // Copyright: © 2014 Antoine Moser
 // License:   MIT (see LICENSE)
 // ==========================================================================
 (function() {
 
 Ember.Chart = Ember.Namespace.create();
-Ember.Chart.VERSION = '0.1.1';
+Ember.Chart.VERSION = '0.2.0';
 
 Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
 
@@ -162,7 +162,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
   },
 
-  draw: function(redraw) {
+  draw: function() {
     var params    = this.params = this.get('data');
 
     var charts        = params.charts;
