@@ -1,3 +1,7 @@
+## Changes between 0.2.1 and 0.2.2
+
+* Fix bug #2 (problem width on Firefox)
+
 ## Changes between 0.2.0 and 0.2.1
 
 * X Axis legend can rotate with `rotateLegend` parameter

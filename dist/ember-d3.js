@@ -1,13 +1,13 @@
 // ==========================================================================
 // Project:   Ember D3 Component
-// Version    v0.2.1
+// Version    v0.2.2
 // Copyright: © 2014 Antoine Moser
 // License:   MIT (see LICENSE)
 // ==========================================================================
 (function() {
 
 Ember.Chart = Ember.Namespace.create();
-Ember.Chart.VERSION = '0.2.1';
+Ember.Chart.VERSION = '0.2.2';
 
 Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
 
@@ -130,7 +130,8 @@ Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
 (function() {
 
 Ember.Chart.ChartComponent = Ember.Component.extend({
-  tagName: 'svg',
+  tagName: 'div',
+  classNames: ['chart'],
   margin: {
     top: 35,
     right: 30,
@@ -147,15 +148,15 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
   initialize: function() {
     var width;
     if(this.get('width') === undefined) {
-      width = parseInt(d3.select('#'+this.get('elementId')).style('width'));
+      width = parseInt(d3.select('.chart').style('width'));
     } else {
       width = this.get('width');
     }
     width     = this.width  =  width - this.margin.left - this.margin.right;
     var height    = this.height = this.get('height') - this.margin.top - this.margin.bottom;
 
-    this.chart = d3.select('#'+this.get('elementId'))
-      .attr('id', 'chart')
+    this.chart = d3.select('.chart')
+      .append('svg:svg')
       .attr('width', this.width + this.margin.left + this.margin.right)
       .attr('height', this.height + this.margin.top + this.margin.bottom)
       .append('svg:g')
@@ -432,7 +433,6 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       .call(xAxis);
       
     if (rotate === true) {
-      console.log('toto');
       axis.selectAll("text")
       .style("text-anchor", "end")
       .attr("transform", function(d) {
