@@ -1,3 +1,7 @@
+## Changed between 0.2.2 and 0.2.3
+
+* The chart is now resizable
+
 ## Changes between 0.2.1 and 0.2.2
 
 * Fix bug #2 (problem width on Firefox)

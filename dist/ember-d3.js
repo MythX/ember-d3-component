@@ -1,13 +1,13 @@
 // ==========================================================================
 // Project:   Ember D3 Component
-// Version    v0.2.2
+// Version    v0.2.3
 // Copyright: © 2014 Antoine Moser
 // License:   MIT (see LICENSE)
 // ==========================================================================
 (function() {
 
 Ember.Chart = Ember.Namespace.create();
-Ember.Chart.VERSION = '0.2.2';
+Ember.Chart.VERSION = '0.2.3';
 
 Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
 
@@ -157,13 +157,13 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
 
     this.chart = d3.select('.chart')
       .append('svg:svg')
-      .attr('width', this.width + this.margin.left + this.margin.right)
-      .attr('height', this.height + this.margin.top + this.margin.bottom)
+      .style('width', this.width + this.margin.left + this.margin.right + 'px')
+      .style('height', this.height + this.margin.top + this.margin.bottom + 'px')
       .append('svg:g')
       .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
   },
 
-  draw: function() {
+  draw: function(redraw) {
     var params    = this.params = this.get('data');
 
     var charts        = params.charts;
@@ -212,12 +212,11 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       var interpolate = dataset.interpolate ? dataset.interpolate : '';
 
       if (dataset.type === 'line') {
-        var animation = dataset.animation ? true : false;
-        
+
         lineCharts.push(Ember.Object.create({
           data: formatedData,
           color: dataset.color,
-          animation: animation,
+          animation: dataset.animation && !redraw,
           points: true,
           interpolate: interpolate,
           yAxis: dataset.yAxis
@@ -248,6 +247,8 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     var barChartData = this.barChartData(formatedDatas, types);
     var x    = this.x = this.createX(formatedDatas[0], xAxis.format, xAxis.origin, barChartData);
     
+
+
     // Create YAxis
     yAxisArray.forEach(function (yAxis) {
       yAxis.max = this.searchMaxY(yAxis.data);
@@ -284,6 +285,21 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       var line = this.drawLine(x, this.searchYAxis(a.yAxis, yAxisArray), a.data, l.interpolate, xAxis.origin);
       path = this.drawLineOnSvg(line, a.data, a.color);
     }, this);
+
+    d3.select(window).on('resize.chart', function() {
+      Ember.run.debounce(this, function() {
+        var newWidth = parseInt(d3.select('.chart').style('width')) - this.margin.left - this.margin.right;
+        if(newWidth != this.width) {
+          this.width = newWidth;
+
+          d3.select(d3.select('#'+this.get('elementId') + ' > svg')[0][0])
+            .style('width', this.width + this.margin.left + this.margin.right + 'px');
+
+          this.clearCharts();
+          this.draw(true);
+        }
+      }, 150);
+    }.bind(this));
   },
 
   createX: function(data, type, origin, barChartData) {
