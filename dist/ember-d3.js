@@ -1,13 +1,13 @@
 // ==========================================================================
 // Project:   Ember D3 Component
-// Version    v0.2.3
+// Version    v0.2.4
 // Copyright: © 2014 Antoine Moser
 // License:   MIT (see LICENSE)
 // ==========================================================================
 (function() {
 
 Ember.Chart = Ember.Namespace.create();
-Ember.Chart.VERSION = '0.2.3';
+Ember.Chart.VERSION = '0.2.4';
 
 Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
 
@@ -147,15 +147,16 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
 
   initialize: function() {
     var width;
+    this.containerSelector = '#'+this.get('elementId') + '.chart';
     if(this.get('width') === undefined) {
-      width = parseInt(d3.select('.chart').style('width'));
+      width = parseInt(d3.select(this.containerSelector).style('width'), 10);
     } else {
       width = this.get('width');
     }
     width     = this.width  =  width - this.margin.left - this.margin.right;
     var height    = this.height = this.get('height') - this.margin.top - this.margin.bottom;
 
-    this.chart = d3.select('.chart')
+    this.chart = d3.select(this.containerSelector)
       .append('svg:svg')
       .style('width', this.width + this.margin.left + this.margin.right + 'px')
       .style('height', this.height + this.margin.top + this.margin.bottom + 'px')
@@ -286,13 +287,13 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       path = this.drawLineOnSvg(line, a.data, a.color);
     }, this);
 
-    d3.select(window).on('resize.chart', function() {
+    d3.select(window).on('resize.'+this.containerSelector, function() {
       Ember.run.debounce(this, function() {
-        var newWidth = parseInt(d3.select('.chart').style('width')) - this.margin.left - this.margin.right;
+        var newWidth = parseInt(d3.select(this.containerSelector).style('width'), 10) - this.margin.left - this.margin.right;
         if(newWidth != this.width) {
           this.width = newWidth;
 
-          d3.select(d3.select('#'+this.get('elementId') + ' > svg')[0][0])
+          d3.select(d3.select(this.containerSelector + ' > svg')[0][0])
             .style('width', this.width + this.margin.left + this.margin.right + 'px');
 
           this.clearCharts();
