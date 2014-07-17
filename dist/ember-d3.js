@@ -1,13 +1,13 @@
 // ==========================================================================
 // Project:   Ember D3 Component
-// Version    v0.2.4
+// Version    v0.2.5
 // Copyright: © 2014 Antoine Moser
 // License:   MIT (see LICENSE)
 // ==========================================================================
 (function() {
 
 Ember.Chart = Ember.Namespace.create();
-Ember.Chart.VERSION = '0.2.4';
+Ember.Chart.VERSION = '0.2.5';
 
 Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
 
@@ -209,7 +209,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
         yAxisArray[0].data.push(dataset.data);
       }
 
-      formatedData = this.formatData(dataset.data, xAxis);
+      var formatedData = this.formatData(dataset.data, xAxis);
       var interpolate = dataset.interpolate ? dataset.interpolate : '';
 
       if (dataset.type === 'line') {
@@ -238,7 +238,6 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
         }));
       }
     }, this);
-
 
     data.forEach(function(d) {
       formatedDatas.push(this.formatData(d, xAxis));
@@ -283,7 +282,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     areaCharts.forEach(function(a) {
       var area = this.drawArea(x, this.searchYAxis(a.yAxis, yAxisArray));
       path = this.drawAreaOnSvg(area, a.data, a.color);
-      var line = this.drawLine(x, this.searchYAxis(a.yAxis, yAxisArray), a.data, l.interpolate, xAxis.origin);
+      var line = this.drawLine(x, this.searchYAxis(a.yAxis, yAxisArray), a.data, a.interpolate, xAxis.origin);
       path = this.drawLineOnSvg(line, a.data, a.color);
     }, this);
 
