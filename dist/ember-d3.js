@@ -187,7 +187,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
         name: axis.name,
         color: axis.color,
         legend: axis.legend,
-        max: 0,
+        max: axis.max || 0,
         y: '',
         orient: axis.position,
         data: []
@@ -238,7 +238,9 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     
     // Create YAxis
     yAxisArray.forEach(function (yAxis) {
-      yAxis.max = this.searchMaxY(yAxis.data);
+      if(yAxis.max === 0) {
+        yAxis.max = this.searchMaxY(yAxis.data);
+      }
       yAxis.y = this.createY(yAxis.max);
       this.drawYAxis(yAxis.y, yAxis.legend, yAxis.orient, yAxis.color);
     }.bind(this));

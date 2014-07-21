@@ -1,6 +1,7 @@
 ## Changes between 0.2.5 and 0.2.6
 
 * Add animation on bar chart
+* Add max on yAxis
 
 ## Changes between 0.2.4 and 0.2.5
 

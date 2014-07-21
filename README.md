@@ -69,6 +69,7 @@ yAxis :
     name: String (required)
     color: String (not required)
     legend: String (not required)
+    max: Integer (not required)
     position: String (left or right) (required)
 
 Line-chart :
