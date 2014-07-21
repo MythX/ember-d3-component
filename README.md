@@ -85,6 +85,7 @@ Bar-chart :
     type: 'bar' (required)
     yAxis: String (required)
     data: Array (required)
+    animation: Boolean (not required)
     color: String (not required) - For single color
     colors: Array (not required) - For multi-color, you need one color for one bar
     

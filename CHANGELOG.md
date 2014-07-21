@@ -1,4 +1,16 @@
-## Changed between 0.2.2 and 0.2.3
+## Changes between 0.2.5 and 0.2.6
+
+* Add animation on bar chart
+
+## Changes between 0.2.4 and 0.2.5
+
+* Fix bug with area-chart
+
+## Changes between 0.2.3 and 0.2.4
+
+* Resize chart
+
+## Changes between 0.2.2 and 0.2.3
 
 * The chart is now resizable
 
