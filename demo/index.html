@@ -29,7 +29,8 @@
           xAxis: {
             format: 'date',
             dateFormat: 'DD/MM',
-            origin: false
+            origin: false,
+            rotateLegend: true
           },
           yAxis: [{
             name: 'y1',
@@ -69,7 +70,7 @@
 
         test.charts.push(Ember.Object.create({
           type: 'bar',
-          animation: false,
+          animation: true,
           data: newContent,
           yAxis: 'y1',
           color: "#428bca"
@@ -86,7 +87,7 @@
         }
 
         test.charts.push(Ember.Object.create({
-          animation: false,
+          animation: true,
           type: 'bar',
           data: newContent,
           yAxis: 'y1',
