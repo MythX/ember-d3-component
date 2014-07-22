@@ -1,13 +1,13 @@
 // ==========================================================================
 // Project:   Ember D3 Component
-// Version    v0.2.6
+// Version    v0.2.7
 // Copyright: © 2014 Antoine Moser
 // License:   MIT (see LICENSE)
 // ==========================================================================
 (function() {
 
 Ember.Chart = Ember.Namespace.create();
-Ember.Chart.VERSION = '0.2.6';
+Ember.Chart.VERSION = '0.2.7';
 
 Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
 
@@ -276,7 +276,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     lineCharts.forEach(function(l) {
       var line = this.drawLine(x, this.searchYAxis(l.yAxis, yAxisArray), l.data, l.interpolate, xAxis.origin);
       var path = this.drawLineOnSvg(line, l.data, l.color);
-      this.drawPoints(l.data, x, this.searchYAxis(l.yAxis, yAxisArray), xAxis.origin);
+      this.drawPoints(l.data, x, this.searchYAxis(l.yAxis, yAxisArray), xAxis.origin, l.color);
 
       if(l.animation === true) {
         this.lineAnimation(path);
@@ -361,15 +361,15 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       .attr("stroke-dashoffset", 0);
   },
 
-  drawPoints: function(data, x, y, origin) {
+  drawPoints: function(data, x, y, origin, color) {
     var points = this.chart.selectAll('.points')
       .data(data)
       .enter().append('svg:circle')
+      .attr('class', 'circle')
       .attr('data-toggle', 'tooltip')
       .attr('title', function(d) { return d.keyD + " </br>" + d.valD; })
       .attr("data-html", true)
-      .attr('stroke', 'black')
-      .attr('fill', 'black')
+      .attr('stroke', color)
       .attr('cx', function(d) { return x(d.keyD) + (!origin ? (x.rangeBand() / 2) : 0); })
       .attr('cy', function(d) { return y(d.valD); })
       .attr('r', 3);

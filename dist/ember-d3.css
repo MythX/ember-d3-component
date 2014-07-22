@@ -18,3 +18,7 @@
 .area {
   opacity: 0.2;
 }
+.circle {
+  fill: white;
+  stroke-width: 1.5px;
+}

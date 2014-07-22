@@ -1,3 +1,7 @@
+## Changes between 0.2.6 and 0.2.7
+
+* Add class circle for points on line
+
 ## Changes between 0.2.5 and 0.2.6
 
 * Add animation on bar chart
