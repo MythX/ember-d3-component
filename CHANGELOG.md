@@ -1,3 +1,7 @@
+## Changes between 0.2.7 and 0.2.8
+
+* Fix bug with yMax
+
 ## Changes between 0.2.6 and 0.2.7
 
 * Add class circle for points on line
