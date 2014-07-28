@@ -134,7 +134,8 @@
             name: 'y1',
             color: 'black',
             position: 'left',
-            legend: 'Legend left'
+            legend: 'Legend left',
+            max: 100
           }]
         });
 
@@ -199,10 +200,10 @@
           }]
         });
 
-        for(var i = 0, l = Math.floor((Math.random() * 30) + min); i < l; i++) {
+        for(var i = 0, l = nbPoints; i < l; i++) {
           var item = Ember.Object.create({
             keyD: moment().add('days', i),
-            valD: Math.floor((Math.random() * max))
+            valD: Math.floor((Math.random() * max) + min)
           });
         
           newContent[i] = item;
