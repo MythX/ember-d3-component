@@ -47,8 +47,7 @@ gulp.task('scripts', function() {
 
 gulp.task('release', function() {
   gulp.src([
-      'tmp/components.js',
-      'tmp/templates.js'
+      'tmp/components.js'
     ])
     .pipe(concat('ember-d3.js'))
     .pipe(header(banner, { pkg: pkg }))
@@ -74,6 +73,4 @@ gulp.task('watch', function() {
   gulp.watch(paths.dist).on('change', changed);
 });
 
-gulp.task('default', function(callback) {
-  runSequence('templates', 'scripts', 'styles', 'release', callback);
-});
+gulp.task('default', ['templates', 'scripts', 'styles', 'release']);

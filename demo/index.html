@@ -50,71 +50,124 @@
         }
 
         test.charts.push(Ember.Object.create({
-          type: 'area',
+          type: 'line',
           data: newContent,
-          color: "#FF0000",
+          gradient: {
+            stops: [
+              {offset: "0%", color: "red"},
+              {offset: "50%", color: "orange"},
+              {offset: "80%", color: "orange"},
+              {offset: "100%", color: "green"}
+            ],
+            max: 100
+          },
           yAxis: 'y1',
           interpolate: 'monotone',
           animation: true
         }));
 
-//        var newContent = [];
-//        for(var i = 0, l = nbPoints; i < l; i++) {
-//          var item = Ember.Object.create({
-//            keyD: moment().add('days', i),
-//            valD: Math.floor((Math.random() * max) + min)
-//          });
-//        
-//          newContent[i] = item;
-//        }
-//
-//        test.charts.push(Ember.Object.create({
-//          type: 'bar',
-//          animation: true,
-//          data: newContent,
-//          yAxis: 'y1',
-//          color: "#428bca"
-//        }));
-//
-//        var newContent = [];
-//        for(var i = 0, l = nbPoints; i < l; i++) {
-//          var item = Ember.Object.create({
-//            keyD: moment().add('days', i),
-//            valD: Math.floor((Math.random() * max) + min)
-//          });
-//        
-//          newContent[i] = item;
-//        }
-//
-//        test.charts.push(Ember.Object.create({
-//          animation: true,
-//          type: 'bar',
-//          data: newContent,
-//          yAxis: 'y1',
-//          color: "#70818F"
-//        }));
-//
-//
-//        var newContent = [];
-//        for(var i = 0, l = nbPoints; i < l; i++) {
-//          var item = Ember.Object.create({
-//            keyD: moment().add('days', i),
-//            valD: Math.floor((Math.random() * max) + min)
-//          });
-//        
-//          newContent[i] = item;
-//        }
-//
-//        test.charts.push(Ember.Object.create({
-//          type: 'line',
-//          data: newContent,
-//          color: "#000000",
-//          yAxis: 'y1',
-//          animation: false
-//        }));
+        var newContent = [];
+        for(var i = 0, l = nbPoints; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            valD: Math.floor((Math.random() * max) + min)
+          });
+        
+          newContent[i] = item;
+        }
+
+        test.charts.push(Ember.Object.create({
+          type: 'bar',
+          animation: true,
+          data: newContent,
+          yAxis: 'y1',
+          color: "#428bca"
+        }));
+
+        var newContent = [];
+        for(var i = 0, l = nbPoints; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            valD: Math.floor((Math.random() * max) + min)
+          });
+        
+          newContent[i] = item;
+        }
+
+        test.charts.push(Ember.Object.create({
+          animation: true,
+          type: 'bar',
+          data: newContent,
+          yAxis: 'y1',
+          color: "#70818F"
+        }));
 
 
-        return test;
+        var newContent = [];
+        for(var i = 0, l = nbPoints; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            valD: Math.floor((Math.random() * max) + min)
+          });
+        
+          newContent[i] = item;
+        }
+
+        test.charts.push(Ember.Object.create({
+          type: 'line',
+          data: newContent,
+          color: "#000000",
+          yAxis: 'y1',
+          animation: false
+        }));
+
+        var testArea = Ember.Object.create({
+          charts: [],
+          xAxis: {
+            format: 'date',
+            dateFormat: 'DD/MM',
+            origin: false,
+            rotateLegend: true
+          },
+          yAxis: [{
+            name: 'y1',
+            color: 'black',
+            position: 'left',
+            legend: 'Legend left'
+          }]
+        });
+
+        for(var i = 0, l = nbPoints; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            valD: Math.floor((Math.random() * max) + min)
+          });
+        
+          newContent[i] = item;
+        }
+
+        testArea.charts.push(Ember.Object.create({
+          type: 'area',
+          data: newContent,
+          gradient: {
+            stops: [
+              {offset: "0%", color: "red"},
+              {offset: "50%", color: "orange"},
+              {offset: "80%", color: "orange"},
+              {offset: "100%", color: "green"}
+            ],
+            max: 100
+          },
+          yAxis: 'y1',
+          interpolate: 'monotone',
+          animation: true
+        }));
+      
+
+        return Ember.Object.create({
+          lineAndBar: test,
+          area: testArea
+        });
       }
     });
 
@@ -137,12 +190,115 @@
             color: 'black',
             position: 'left',
             legend: 'Legend left'
-          }/*, {
+          }, {
             name: 'y2',
             color: 'black',
             position: 'right',
             legend: 'Legend right'
-          }*/]
+          }]
+        });
+
+        for(var i = 0, l = nbPoints; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            valD: Math.floor((Math.random() * max) + min)
+          });
+        
+          newContent[i] = item;
+        }
+
+        test.charts.push(Ember.Object.create({
+          type: 'line',
+          data: newContent,
+          gradient: {
+            stops: [
+              {offset: "0%", color: "red"},
+              {offset: "50%", color: "orange"},
+              {offset: "80%", color: "orange"},
+              {offset: "100%", color: "green"}
+            ],
+            max: 100
+          },
+          yAxis: 'y1',
+          interpolate: 'monotone',
+          animation: false
+        }));
+
+        var newContent = [];
+        for(var i = 0, l = nbPoints; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            valD: Math.floor((Math.random() * max) + min)
+          });
+        
+          newContent[i] = item;
+        }
+
+        test.charts.push(Ember.Object.create({
+          type: 'bar',
+          data: newContent,
+          yAxis: 'y1',
+          color: "#428bca"
+        }));
+
+        var newContent = [];
+        for(var i = 0, l = nbPoints; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            valD: Math.floor((Math.random() * max) + min)
+          });
+        
+          newContent[i] = item;
+        }
+
+        test.charts.push(Ember.Object.create({
+          type: 'bar',
+          data: newContent,
+          yAxis: 'y1',
+          color: "#70818F"
+        }));
+
+
+        var newContent = [];
+        for(var i = 0, l = nbPoints; i < l; i++) {
+          var item = Ember.Object.create({
+            keyD: moment().add('days', i),
+            valD: Math.floor((Math.random() * max) + min)
+          });
+        
+          newContent[i] = item;
+        }
+
+        test.charts.push(Ember.Object.create({
+          type: 'line',
+          data: newContent,
+          color: "#000000",
+          yAxis: 'y2',
+          animation: true
+        }));
+
+
+        return test;
+      },
+      
+      generateAreaValues: function() {
+        var newContent = [];
+        var max = 100, min = 0;
+        var nbPoints = 10;
+        
+        var test = Ember.Object.create({
+          charts: [],
+          xAxis: {
+            format: 'date',
+            dateFormat: 'DD/MM',
+            origin: false
+          },
+          yAxis: [{
+            name: 'y1',
+            color: 'black',
+            position: 'left',
+            legend: 'Legend left'
+          }]
         });
 
         for(var i = 0, l = nbPoints; i < l; i++) {
@@ -157,79 +313,36 @@
         test.charts.push(Ember.Object.create({
           type: 'area',
           data: newContent,
-          color: "#FF0000",
+//          color: "#FF0000",
+          gradient: {
+            stops: [
+              {offset: "0%", color: "red"},
+              {offset: "50%", color: "orange"},
+              {offset: "80%", color: "orange"},
+              {offset: "100%", color: "green"}
+            ],
+            max: 100
+          },
           yAxis: 'y1',
           interpolate: 'monotone',
           animation: false
         }));
-
-//        var newContent = [];
-//        for(var i = 0, l = nbPoints; i < l; i++) {
-//          var item = Ember.Object.create({
-//            keyD: moment().add('days', i),
-//            valD: Math.floor((Math.random() * max) + min)
-//          });
-//        
-//          newContent[i] = item;
-//        }
-//
-//        test.charts.push(Ember.Object.create({
-//          type: 'bar',
-//          data: newContent,
-//          yAxis: 'y1',
-//          color: "#428bca"
-//        }));
-//
-//        var newContent = [];
-//        for(var i = 0, l = nbPoints; i < l; i++) {
-//          var item = Ember.Object.create({
-//            keyD: moment().add('days', i),
-//            valD: Math.floor((Math.random() * max) + min)
-//          });
-//        
-//          newContent[i] = item;
-//        }
-//
-//        test.charts.push(Ember.Object.create({
-//          type: 'bar',
-//          data: newContent,
-//          yAxis: 'y1',
-//          color: "#70818F"
-//        }));
-//
-//
-//        var newContent = [];
-//        for(var i = 0, l = nbPoints; i < l; i++) {
-//          var item = Ember.Object.create({
-//            keyD: moment().add('days', i),
-//            valD: Math.floor((Math.random() * max) + min)
-//          });
-//        
-//          newContent[i] = item;
-//        }
-//
-//        test.charts.push(Ember.Object.create({
-//          type: 'line',
-//          data: newContent,
-//          color: "#000000",
-//          yAxis: 'y2',
-//          animation: true
-//        }));
-
-
+        
         return test;
       },
 
       actions: {
         generateValue: function() {
-          this.set("content", this.generateValues());
+          this.set("lineAndBar", this.generateValues());
+          this.set("area", this.generateAreaValues());
         }
       }
     });
   </script>
 
   <script type="text/x-handlebars" data-template-name="application">
-    {{ draw-chart width=1000 height=300 dataBinding='content' }}
+    {{ draw-chart width=1000 height=300 dataBinding='lineAndBar' }}
+    {{ draw-chart width=1000 height=300 dataBinding='area' }}
         <button type="button" class="btn btn-primary" {{action 'generateValue'}} >
       Generate new Values
     </button>
