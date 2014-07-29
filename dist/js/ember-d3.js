@@ -162,6 +162,8 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       .style('height', this.height + this.margin.top + this.margin.bottom + 'px')
       .append('svg:g')
       .attr('transform', 'translate(' + this.margin.left + ',' + this.margin.top + ')');
+    
+    this.defs = this.chart.append('defs');
   },
 
   draw: function(redraw) {
@@ -183,7 +185,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     var lineCharts    = [];
     var areaCharts    = [];
     var barChart      = [];
-
+    
     // Search YAxis
     yAxis.forEach(function(axis) {
       yAxisArray.push({
@@ -212,12 +214,13 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
 
       var formatedData = this.formatData(dataset.data, xAxis);
       var interpolate = dataset.interpolate ? dataset.interpolate : '';
-
+      
       if (dataset.type === 'line') {
 
         lineCharts.push(Ember.Object.create({
           data: formatedData,
           color: dataset.color,
+          gradient: dataset.gradient,
           animation: dataset.animation && !redraw,
           points: true,
           interpolate: interpolate,
@@ -237,8 +240,10 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
         areaCharts.push(Ember.Object.create({
           data: formatedData,
           color: dataset.color,
+          gradient: dataset.gradient,
           interpolate: interpolate,
-          yAxis: dataset.yAxis
+          yAxis: dataset.yAxis,
+          defined: (dataset.defined) ? dataset.defined : false
         }));
       }
     }, this);
@@ -250,7 +255,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     // Format barchat data
     var barChartData = this.barChartData(formatedDatas, types);
     var x    = this.x = this.createX(formatedDatas[0], xAxis.format, xAxis.origin, barChartData);
-    
+
     // Create YAxis
     yAxisArray.forEach(function (yAxis) {
       if(yAxis.max === 0) {
@@ -261,7 +266,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     }.bind(this));
 
     this.drawXAxis(x, xAxis.rotateLegend);
-
+    
     // Draw lines and bar
     if (barChartData.length > 1)
       this.drawBarChart(this.height, x, this.searchYAxis(yAxisBar, yAxisArray), barChartData, colorBars, false, barChartAnimation);
@@ -274,9 +279,25 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     }
 
     lineCharts.forEach(function(l) {
-      var line = this.drawLine(x, this.searchYAxis(l.yAxis, yAxisArray), l.data, l.interpolate, xAxis.origin);
-      var path = this.drawLineOnSvg(line, l.data, l.color);
-      this.drawPoints(l.data, x, this.searchYAxis(l.yAxis, yAxisArray), xAxis.origin, l.color);
+      
+      var y = this.searchYAxis(l.yAxis, yAxisArray);
+      
+      if (l.gradient) {
+        this.defs.append("linearGradient")
+          .attr("gradientUnits", "userSpaceOnUse")
+          .attr("id", l.yAxis + "-gradient")
+          .attr("x1", 0).attr("y1", y(0))
+          .attr("x2", 0).attr("y2", y(l.gradient.max))
+        .selectAll("stop")
+          .data(l.gradient.stops)
+        .enter().append("stop")
+          .attr("offset", function(d) { return d.offset; })
+          .attr("stop-color", function(d) { return d.color; });
+      }
+      
+      var line = this.drawLine(x, y, l.data, l.interpolate, xAxis.origin);
+      var path = this.drawLineOnSvg(line, l.data, l.color, l.gradient ? l.yAxis + "-gradient" : null);
+      this.drawPoints(l.data, x, y, xAxis.origin, l.color);
 
       if(l.animation === true) {
         this.lineAnimation(path);
@@ -284,10 +305,27 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     }, this);
 
     areaCharts.forEach(function(a) {
-      var area = this.drawArea(x, this.searchYAxis(a.yAxis, yAxisArray));
-      path = this.drawAreaOnSvg(area, a.data, a.color);
-      var line = this.drawLine(x, this.searchYAxis(a.yAxis, yAxisArray), a.data, a.interpolate, xAxis.origin);
-      path = this.drawLineOnSvg(line, a.data, a.color);
+      
+      var y = this.searchYAxis(a.yAxis, yAxisArray);
+      
+      if (a.gradient) {
+        this.defs.append("linearGradient")
+          .attr("gradientUnits", "userSpaceOnUse")
+          .attr("id", a.yAxis + "-gradient")
+          .attr("x1", 0).attr("y1", y(0))
+          .attr("x2", 0).attr("y2", y(a.gradient.max))
+        .selectAll("stop")
+          .data(a.gradient.stops)
+        .enter().append("stop")
+          .attr("offset", function(d) { return d.offset; })
+          .attr("stop-color", function(d) { return d.color; });
+      }
+      
+      var area = this.drawArea(x, y);
+      this.drawAreaOnSvg(area, a.data, a.color, a.gradient ? a.yAxis + "-gradient" : null);
+      var line = this.drawLine(x, y, a.data, a.interpolate, xAxis.origin);
+      this.drawLineOnSvg(line, a.data, a.color, a.gradient ? a.yAxis + "-gradient" : null);
+
     }, this);
 
     d3.select(window).on('resize.'+this.containerSelector, function() {
@@ -331,22 +369,32 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
       .domain([0, (this.get("yMax")) ? this.get("yMax") : max]);
   },
 
-  drawLine: function(x, y, data, interpolate, origin) {
-    var line = d3.svg.line().interpolate(interpolate).y(function(d) { return y(d.valD); });
+  drawLine: function(x, y, data, interpolate, origin, area) {
+    var line = d3.svg.line().interpolate(interpolate)
+      .y(function(d) { return y(d.valD); });
     if(!origin) {
       line.x(function(d) { return x(d.keyD) + (x.rangeBand() / 2); });
     } else {
       line.x(function(d) { return x(d.keyD); });
     }
+
+    if (area !== undefined && area.defined())
+      line.defined(area.defined());
+
     return line;
   },
 
-  drawLineOnSvg: function(line, formatedData, color) {
+  drawLineOnSvg: function(line, formatedData, color, gradientId) {
     var path = this.chart.append('svg:path')
       .attr('class', 'line')
       .attr('clip-path', 'url(#clip)')
-      .attr('stroke', color)
       .attr('d', line(formatedData));
+    
+    if (gradientId) {
+      path.attr('stroke', 'url(#'+gradientId+')');
+    } else {
+      path.attr('stroke', color);
+    }
 
     return path;
   },
@@ -439,22 +487,39 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     }
   },
 
-  drawArea: function(x, y) {
+  drawArea: function(x, y, defined) {
     var area = d3.svg.area()
       .interpolate('monotone')
       .x(function(d) { return x(d.keyD) + (x.rangeBand() / 2); })
       .y0(this.height)
       .y1(function(d) { return y(d.valD); });
 
+    if (defined) {
+      area.defined(function(d) {
+        var res = true;
+        defined.forEach(function(def) {
+          if(def === d.valD && res !== false)
+            res = false;
+        });
+
+        return res;
+      });
+    }
+
     return area;
   },
 
-  drawAreaOnSvg: function(area, formatedData, color) {
+  drawAreaOnSvg: function(area, formatedData, color, gradientId) {
     var path = this.chart.append('svg:path')
       .attr('class', 'area')
-      .attr('fill', color)
       .attr('d', area(formatedData));
 
+    if (gradientId) {
+      path.attr('fill', 'url(#'+gradientId+')');
+    } else {
+      path.attr('fill', color);
+    }
+    
     return path;
   },
 

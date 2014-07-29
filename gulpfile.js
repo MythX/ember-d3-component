@@ -19,14 +19,14 @@ var banner = [
 ].join('\n');
 
 var paths = {
-  dist: 'dist/',
   templates: 'lib/templates/**/*.hbs',
   scripts: [
     'lib/templates-top.js',
     'lib/components/*.js'
   ],
+//  js: 'dist/js/*.js',
   styles: 'lib/styles/ember-d3.less',
-  css: 'dist/*.css'
+  dist: 'dist/**/*.*'
 };
 
 gulp.task('templates', function() {
@@ -47,18 +47,17 @@ gulp.task('scripts', function() {
 
 gulp.task('release', function() {
   gulp.src([
-      'tmp/components.js',
-      'tmp/templates.js'
+      'tmp/components.js'
     ])
     .pipe(concat('ember-d3.js'))
     .pipe(header(banner, { pkg: pkg }))
-    .pipe(gulp.dest(paths.dist));
+    .pipe(gulp.dest('dist/js/'));
 });
 
 gulp.task('styles', function() {
   return gulp.src(paths.styles)
     .pipe(less())
-    .pipe(gulp.dest(paths.dist));
+    .pipe(gulp.dest('dist/css/'));
 });
 
 gulp.task('watch', function() {
@@ -67,12 +66,11 @@ gulp.task('watch', function() {
     server.changed(file.path);
   };
 
-  gulp.watch(paths.scripts, ['scripts', 'release']).on('change', changed);
-  gulp.watch(paths.templates, ['templates']).on('change', changed);
+  gulp.watch(paths.scripts, ['scripts', 'release']);
+  gulp.watch(paths.templates, ['templates']);
   gulp.watch(paths.styles, ['styles']);
-  gulp.watch(paths.css).on('change', changed);
+//  gulp.watch(paths.js).on('change', changed);
+  gulp.watch(paths.dist).on('change', changed);
 });
 
-gulp.task('default', function(callback) {
-  runSequence('templates', 'scripts', 'release', 'styles', callback);
-});
+gulp.task('default', ['templates', 'scripts', 'styles', 'release']);
