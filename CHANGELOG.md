@@ -1,3 +1,8 @@
+## Changes between 0.2.8 and 0.3.0
+
+* Move dist files on dist/css and dist/js
+* Add gradient on Area and Line
+
 ## Changes between 0.2.7 and 0.2.8
 
 * Fix bug with yMax

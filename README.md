@@ -78,6 +78,7 @@ Line-chart :
     yAxis: String (required)
     data: Array (required)
     color: String (required)
+    gradient: Object (not required)
     animation: Boolean (not required)
     interpolate: String (not required) ['monotone', 'basic']
     
@@ -96,6 +97,7 @@ Area-chart:
     yAxis: String (required)
     data: Array (required)
     color: String (required)
+    gradient: Object (not required)
     interpolate: String (not required) ['monotone', 'basic']
 
 Data : 
@@ -104,5 +106,15 @@ Data :
       keyD: key,
       valD: val,
      }]
-    
-    
+
+Gradient : 
+
+    gradient: {
+      stops: [
+        {offset: "0%", color: "red"},
+        {offset: "50%", color: "orange"},
+        {offset: "80%", color: "orange"},
+        {offset: "100%", color: "green"}
+      ],
+      max: 100
+    }
