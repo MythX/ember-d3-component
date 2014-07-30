@@ -1,13 +1,13 @@
 // ==========================================================================
 // Project:   Ember D3 Component
-// Version    v0.3.0
+// Version    v0.3.1
 // Copyright: © 2014 Antoine Moser
 // License:   MIT (see LICENSE)
 // ==========================================================================
 (function() {
 
 Ember.Chart = Ember.Namespace.create();
-Ember.Chart.VERSION = '0.3.0';
+Ember.Chart.VERSION = '0.3.1';
 
 Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
 
@@ -195,6 +195,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
         max: axis.max || 0,
         y: '',
         orient: axis.position,
+        ticks: axis.ticks,
         data: []
       });
     });
@@ -262,7 +263,7 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
         yAxis.max = this.searchMaxY(yAxis.data);
       }
       yAxis.y = this.createY(yAxis.max);
-      this.drawYAxis(yAxis.y, yAxis.legend, yAxis.orient, yAxis.color);
+      this.drawYAxis(yAxis.y, yAxis.legend, yAxis.orient, yAxis.color, yAxis.ticks);
     }.bind(this));
 
     this.drawXAxis(x, xAxis.rotateLegend);
@@ -542,12 +543,15 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
     return xAxis;
   },
 
-  drawYAxis: function(y, legendY, orient, color) {
+  drawYAxis: function(y, legendY, orient, color, ticks) {
     var yAxis = d3.svg.axis().scale(y).orient(orient);
- 
+
+    if (ticks)
+      yAxis.ticks(ticks);
+
     if (orient === 'left') {
       this.chart.append('svg:g')
-        .attr('class', 'y axis')
+        .attr('class', 'y y-left axis')
         .attr('fill', color)
         .call(yAxis)
         .append("text")
@@ -555,9 +559,10 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
         .attr('x', -20)
         .attr("dy", ".71em")
         .text(legendY);
+      this.chart.select('.y-left').selectAll('path, line').style('stroke', color);
     } else {
       this.chart.append('svg:g')
-        .attr('class', 'y axis')
+        .attr('class', 'y y-right axis')
         .attr('fill', color)
         .attr('transform', 'translate('+(this.width)  + ',0)')
         .call(yAxis)
@@ -567,8 +572,8 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text(legendY);
+      this.chart.select('.y-right').selectAll('path, line').style('stroke', color);
     }
-
     return yAxis;
   },
 

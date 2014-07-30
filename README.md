@@ -71,6 +71,7 @@ yAxis :
     legend: String (not required)
     max: Integer (not required)
     position: String (left or right) (required)
+    ticks: Integer (not required)
 
 Line-chart :
 

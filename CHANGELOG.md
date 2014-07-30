@@ -1,3 +1,8 @@
+## Changes between 0.3.0 and 0.3.1
+
+* Add color on y axis
+* Add tick options
+
 ## Changes between 0.2.8 and 0.3.0
 
 * Move dist files on dist/css and dist/js
