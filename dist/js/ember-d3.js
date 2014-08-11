@@ -1,14 +1,13 @@
 // ==========================================================================
 // Project:   Ember D3 Component
-// Version    v0.3.1
+// Version    v0.3.2
 // Copyright: © 2014 Antoine Moser
 // License:   MIT (see LICENSE)
 // ==========================================================================
 (function() {
 
 Ember.Chart = Ember.Namespace.create();
-Ember.Chart.VERSION = '0.3.1';
-
+Ember.Chart.VERSION = '0.3.2';
 Ember.libraries.register('ember-d3', Ember.Chart.VERSION);
 
 })();
@@ -544,7 +543,8 @@ Ember.Chart.ChartComponent = Ember.Component.extend({
   },
 
   drawYAxis: function(y, legendY, orient, color, ticks) {
-    var yAxis = d3.svg.axis().scale(y).orient(orient);
+    var yAxis = d3.svg.axis().scale(y).orient(orient)
+      .tickFormat(function(d) { return d; });
 
     if (ticks)
       yAxis.ticks(ticks);
